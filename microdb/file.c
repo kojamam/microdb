@@ -43,33 +43,37 @@ Result finalizeFileModule()
  */
 Result createFile(char *filename)
 {
+    return OK;
 }
 
 /*
  * deleteFile -- ファイルの削除
  *
  * 引数:
- *	??????
+ *	filename: 削除するファイルのファイル名
  *
  * 返り値:
- *	??????
+ *	成功の場合OK、失敗の場合NG
  */
-?????? deleteFile(??????)
+Result deleteFile(char *filename)
 {
+    return OK;
 }
 
 /*
  * openFile -- ファイルのオープン
  *
  * 引数:
- *	??????
+ *	filename: オープンしたいファイルのファイル名
  *
  * 返り値:
  *	オープンしたファイルのFile構造体
  *	オープンに失敗した場合にはNULLを返す
  */
-File *openFile(??????)
+File *openFile(char *filename)
 {
+    File *file;
+    return file;
 }
 
 /*
@@ -83,6 +87,7 @@ File *openFile(??????)
  */
 Result closeFile(File *file)
 {
+    return OK;
 }
 
 /*
@@ -98,6 +103,7 @@ Result closeFile(File *file)
  */
 Result readPage(File *file, int pageNum, char *page)
 {
+    return OK;
 }
 
 /*
@@ -113,6 +119,7 @@ Result readPage(File *file, int pageNum, char *page)
  */
 Result writePage(File *file, int pageNum, char *page)
 {
+    return OK;
 }
 
 /*
@@ -127,4 +134,7 @@ Result writePage(File *file, int pageNum, char *page)
  */
 int getNumPages(char *filename)
 {
+    int pageCount;
+
+    return pageCount;
 }

@@ -32,8 +32,8 @@ struct File {
 extern Result initializeFileModule();
 extern Result finalizeFileModule();
 extern Result createFile(char *);
-extern ?????? deleteFile(??????);
-extern File *openFile(??????);
+extern Result deleteFile(char *);
+extern File *openFile(char *);
 extern Result closeFile(File *);
 extern Result readPage(File *, int, char *);
 extern Result writePage(File *, int, char *);
