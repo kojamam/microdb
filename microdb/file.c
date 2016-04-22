@@ -2,8 +2,19 @@
  * file.c -- ファイルアクセスモジュール
  */
 
+#include <unistd.h>
+#include <fcntl.h>
 #include "microdb.h"
 
+//テスト
+#include <stdio.h>
+
+//テストよう
+int main(void){
+    Result res = createFile("abc");
+    printf("%d", res);
+    return 0;
+}
 /*
  * initializeFileModule -- ファイルアクセスモジュールの初期化処理
  *
@@ -43,6 +54,11 @@ Result finalizeFileModule()
  */
 Result createFile(char *filename)
 {
+    int fd;
+    if((fd = creat(filename, S_IRUSR|S_IWUSR)) == -1){
+        return NG;
+    }
+    close(fd);
     return OK;
 }
 
