@@ -2,19 +2,15 @@
  * file.c -- ファイルアクセスモジュール
  */
 
+
+#include <string.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include "microdb.h"
+#include <sys/stat.h>
+#include "../microdb.h"
 
-//テスト
-#include <stdio.h>
 
-//テストよう
-int main(void){
-    Result res = createFile("abc");
-    printf("%d", res);
-    return 0;
-}
 /*
  * initializeFileModule -- ファイルアクセスモジュールの初期化処理
  *
@@ -73,6 +69,9 @@ Result createFile(char *filename)
  */
 Result deleteFile(char *filename)
 {
+    if(unlink(filename)  == -1){
+        return NG;
+    }
     return OK;
 }
 
@@ -89,6 +88,14 @@ Result deleteFile(char *filename)
 File *openFile(char *filename)
 {
     File *file;
+    file = malloc(sizeof(File));
+
+    strcpy(file->name, filename);
+
+    if((file->desc = open(filename, O_RDWR)) == -1){
+        return NULL;
+    }
+
     return file;
 }
 
@@ -103,6 +110,10 @@ File *openFile(char *filename)
  */
 Result closeFile(File *file)
 {
+    if(close(file->desc) == -1){
+        return NG;
+    }
+    free(file);
     return OK;
 }
 
@@ -119,6 +130,12 @@ Result closeFile(File *file)
  */
 Result readPage(File *file, int pageNum, char *page)
 {
+    if(lseek(file->desc, pageNum*PAGE_SIZE, SEEK_SET)  != -1){
+        return NG;
+    }
+    if (read(file->desc, page, PAGE_SIZE) == -1) {
+        return NG;
+    }
     return OK;
 }
 
@@ -135,11 +152,17 @@ Result readPage(File *file, int pageNum, char *page)
  */
 Result writePage(File *file, int pageNum, char *page)
 {
+    if(lseek(file->desc, pageNum*PAGE_SIZE, SEEK_SET)  == -1){
+        return NG;
+    }
+    if (write(file->desc, page, PAGE_SIZE) == -1) {
+        return NG;
+    }
     return OK;
 }
 
 /*
- * getNumPage -- ファイルのページ数の取得
+ * getNumPages -- ファイルのページ数の取得
  *
  * 引数:
  *	filename: ファイル名
@@ -151,6 +174,18 @@ Result writePage(File *file, int pageNum, char *page)
 int getNumPages(char *filename)
 {
     int pageCount;
+    struct stat statBuf;
+    int fileSize;
+
+    if (stat(filename, &statBuf) == -1) {
+        return -1;
+    }
+
+    if((fileSize = (int)statBuf.st_size) == 0){
+        pageCount = 0;
+    }else{
+        pageCount = (fileSize-1)/PAGE_SIZE + 1;
+    }
 
     return pageCount;
 }
