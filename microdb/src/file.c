@@ -2,13 +2,12 @@
  * file.c -- ファイルアクセスモジュール
  */
 
-
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include "../microdb.h"
+#include "../include/microdb.h"
 
 
 /*
@@ -130,7 +129,7 @@ Result closeFile(File *file)
  */
 Result readPage(File *file, int pageNum, char *page)
 {
-    if(lseek(file->desc, pageNum*PAGE_SIZE, SEEK_SET)  != -1){
+    if(lseek(file->desc, pageNum*PAGE_SIZE, SEEK_SET)  == -1){
         return NG;
     }
     if (read(file->desc, page, PAGE_SIZE) == -1) {
