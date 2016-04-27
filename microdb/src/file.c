@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 #include "../include/microdb.h"
 
+#define  DE 2
 
 /*
  * initializeFileModule -- ファイルアクセスモジュールの初期化処理
