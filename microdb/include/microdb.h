@@ -83,6 +83,6 @@ extern int getNumPages(char *);
 extern Result initializeDataDefModule();
 extern Result finalizeDataDefModule();
 extern Result createTable(char *, TableInfo *);
-extern ?????? dropTable(??????);
+extern Result dropTable(TableInfo *);
 extern TableInfo *getTableInfo(char *);
-extern void freeTableInfo(??????);
+extern void freeTableInfo(TableInfo *);

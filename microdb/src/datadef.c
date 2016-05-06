@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include "microdb.h"
+#include "../include/microdb.h"
 
 /*
  * DEF_FILE_EXT -- データ定義ファイルの拡張子
@@ -24,6 +24,7 @@
  */
 Result initializeDataDefModule()
 {
+    return OK;
 }
 
 /*
@@ -37,6 +38,7 @@ Result initializeDataDefModule()
  */
 Result finalizeDataDefModule()
 {
+    return OK;
 }
 
 /*
@@ -58,19 +60,21 @@ Result finalizeDataDefModule()
  */
 Result createTable(char *tableName, TableInfo *tableInfo)
 {
+    return OK;
 }
 
 /*
  * dropTable -- 表(テーブル)の削除
  *
  * 引数:
- *	??????
+ *	tableInfo: 削除するテーブル定義情報
  *
  * 返り値:
- *	??????
+ *	成功ならOK、失敗ならNGを返す
  */
-?????? dropTable(??????)
+Result dropTable(TableInfo *tableInfo)
 {
+    return OK;
 }
 
 /*
@@ -89,13 +93,15 @@ Result createTable(char *tableName, TableInfo *tableInfo)
  */
 TableInfo *getTableInfo(char *tableName)
 {
+    TableInfo *tableInfo;
+    return tableInfo;
 }
 
 /*
  * freeTableInfo -- データ定義情報を収めたメモリ領域の解放
  *
  * 引数:
- *	??????
+ *	tableInfo: 開放するテーブル定義情報
  *
  * 返り値:
  *	なし
@@ -104,6 +110,6 @@ TableInfo *getTableInfo(char *tableName)
  *	関数getTableInfoが返すデータ定義情報を収めたメモリ領域は、
  *	不要になったら必ずこの関数で解放すること。
  */
-void freeTableInfo(??????)
+void freeTableInfo(TableInfo *tableInfo)
 {
 }
