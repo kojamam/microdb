@@ -1,5 +1,5 @@
 
-CC = gcc
+COMPILER = gcc
 CFLAGS = -g -O0
 
 SOURCEDR = src
@@ -11,20 +11,24 @@ TESTDR = bin
 # all: $(BINDR)/microdb $(TESTDR)/all-test
 #
 # # すべてのテストプログラムを作るルール
-# all-test: $(TESTDR)/test-file
+# all-test: $(TESTDR)/test-file $(TESTDR)/test-datadef
 
 # すべてのテストプログラムを実行するルール
-do-test: $(TESTDR)/test-file
+do-test: $(TESTDR)/test-file $(TESTDR)/test-datadef
 	$(TESTDR)/test-file
+	$(TESTDR)/test-datadef
 
 # 「microdb」を作成するためのルールは、今後追加される予定
 # microdb:
 
 $(BINDR)/test-file: $(SOURCEDR)/test-file.o $(SOURCEDR)/file.o
-	$(CC) -o $(TESTDR)/test-file $(CFLAGS) $(SOURCEDR)/test-file.o $(SOURCEDR)/file.o
+	$(COMPILER) -o $(TESTDR)/test-file $(CFLAGS) $(SOURCEDR)/test-file.o $(SOURCEDR)/file.o
+
+$(BINDR)/test-datadef: $(SOURCEDR)/test-datadef.o $(SOURCEDR)/datadef.o $(INCLUDEDR)/microdb.h
+	$(COMPILER) -o $(TESTDR)/test-datadef $(CFLAGS) $(SOURCEDR)/test-datadef.o $(SOURCEDR)/datadef.o $(INCLUDEDR)/microdb.h
 
 $(SOURCEDR)/%.o: $(SOURCEDR)/%.c $(INCLUDEDR)/microdb.h
-	$(CC) -o $@ $(CFLAGS) -c $<
+	$(COMPILER) -o $@ $(CFLAGS) -c $<
 
 clean:
 	-rm -f $(SOURCEDR)/*.o
