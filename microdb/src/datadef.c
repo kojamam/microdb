@@ -133,7 +133,6 @@ Result dropTable(char *tableName)
  *	この関数が返すデータ定義情報を収めたメモリ領域は、不要になったら
  *	必ずfreeTableInfoで解放すること。
  */
- //TODO エラー処理
 TableInfo *getTableInfo(char *tableName)
 {
     TableInfo *tableInfo;
@@ -157,11 +156,12 @@ TableInfo *getTableInfo(char *tableName)
 
     //フィールド数を取得
     memcpy(&tableInfo->numField, p, sizeof(tableInfo->numField));
+    if(tableInfo->numField < 0){return NULL;}
     p += sizeof(tableInfo->numField);
 
     //フィールド名とフィールドタイプを個数分読み込み
     for(i=0; i<(tableInfo->numField); ++i){
-        memcpy(tableInfo->fieldInfo[i].name, p, sizeof(tableInfo->fieldInfo[i].name));
+        if(strcmp(memcpy(tableInfo->fieldInfo[i].name, p, sizeof(tableInfo->fieldInfo[i].name)), "") ==0){return NULL;}
         p += sizeof(tableInfo->fieldInfo[i].name);
 
         memcpy(&tableInfo->fieldInfo[i].dataType, p, sizeof(tableInfo->fieldInfo[i].name));
@@ -169,7 +169,7 @@ TableInfo *getTableInfo(char *tableName)
     }
 
     //ファイルのクローズ
-    closeFile(file);
+    if(closeFile(file) == NG){return NULL;}
 
     return tableInfo;
 }
