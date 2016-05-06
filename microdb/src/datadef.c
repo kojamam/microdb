@@ -67,19 +67,19 @@ Result createTable(char *tableName, TableInfo *tableInfo)
     int i;
 
     /* ページの内容をクリアする */
-    memset(page, 0, PAGE_SIZE);
+    if(strcmp(memset(page, 0, PAGE_SIZE), "") == 0){return NG;}
     p = page;
 
     /* ページの先頭にフィールド数を保存する */
-    memcpy(p, &tableInfo->numField, sizeof(tableInfo->numField));
+    if(strcmp(memcpy(p, &tableInfo->numField, sizeof(tableInfo->numField)), "") == 0){return NG;}
     p += sizeof(tableInfo->numField);
 
     //他の情報(フィールド名、データ型など)を、配列pageにmemcpyでコピーする...
     for(i=0; i<(tableInfo->numField); ++i){
-        memcpy(p, tableInfo->fieldInfo[i].name, sizeof(tableInfo->fieldInfo[i].name));
+        if(strcmp(memcpy(p, tableInfo->fieldInfo[i].name, sizeof(tableInfo->fieldInfo[i].name)), "") == 0){return NG;}
         p += sizeof(tableInfo->fieldInfo[i].name);
 
-        memcpy(p, &tableInfo->fieldInfo[i].dataType, sizeof(tableInfo->fieldInfo[i].dataType));
+        if(strcmp(memcpy(p, &tableInfo->fieldInfo[i].dataType, sizeof(tableInfo->fieldInfo[i].dataType)), "") == 0){return NG;}
         p += sizeof(tableInfo->fieldInfo[i].dataType);
 
     }
@@ -89,10 +89,13 @@ Result createTable(char *tableName, TableInfo *tableInfo)
     createFile(filename);
 
     //ファイルをオープン
-    file = openFile(filename);
+    if((file = openFile(filename)) == NULL){return NG;}
 
     /* ファイルの先頭ページ(ページ番号0)に1ページ分のデータを書き込む */
-    writePage(file, 0, page);
+    if(writePage(file, 0, page) == NG){return NG;}
+
+    if(closeFile(file) == NG){return NG;}
+
     return OK;
 }
 
@@ -105,8 +108,14 @@ Result createTable(char *tableName, TableInfo *tableInfo)
  * 返り値:
  *	成功ならOK、失敗ならNGを返す
  */
-Result dropTable(TableInfo *tableInfo)
+Result dropTable(char *tableName)
 {
+    char filename[MAX_FILENAME];
+
+    //テーブル定義情報ファイルの削除
+    sprintf(filename, "%s%s", tableName, DEF_FILE_EXT);
+    if(deleteFile(filename) == NG){return NG;}
+
     return OK;
 }
 
@@ -127,6 +136,10 @@ Result dropTable(TableInfo *tableInfo)
 TableInfo *getTableInfo(char *tableName)
 {
     TableInfo *tableInfo;
+
+    tableInfo = (TableInfo*)malloc(sizeof(TableInfo));
+
+    //mallocで失敗時NULLが格納されているのでこれでOK
     return tableInfo;
 }
 
