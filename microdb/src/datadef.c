@@ -70,7 +70,7 @@ Result createTable(char *tableName, TableInfo *tableInfo)
     if(strcmp(memset(page, 0, PAGE_SIZE), "") == 0){return NG;}
     p = page;
 
-    /* ページの先頭にフィールド数を保存する */
+    /* ページの先頭にフィールド数を保存する */ //TODO strcmpはおかしい？
     if(strcmp(memcpy(p, &tableInfo->numField, sizeof(tableInfo->numField)), "") == 0){return NG;}
     p += sizeof(tableInfo->numField);
 
@@ -133,13 +133,44 @@ Result dropTable(char *tableName)
  *	この関数が返すデータ定義情報を収めたメモリ領域は、不要になったら
  *	必ずfreeTableInfoで解放すること。
  */
+ //TODO エラー処理
 TableInfo *getTableInfo(char *tableName)
 {
     TableInfo *tableInfo;
+    File *file;
+    char filename[MAX_FILENAME];
+    char page[PAGE_SIZE];
+    char *p;
+    int i;
 
-    tableInfo = (TableInfo*)malloc(sizeof(TableInfo));
 
-    //mallocで失敗時NULLが格納されているのでこれでOK
+    //テーブル情報のメモリ確保
+    if((tableInfo = (TableInfo*)malloc(sizeof(TableInfo))) == NULL){return NULL;}
+
+    //ファイルのオープン
+    sprintf(filename, "%s%s", tableName, DEF_FILE_EXT);
+    if((file = openFile(filename)) == NULL){return NULL;}
+
+    //0ページ目を読み込み
+    if(readPage(file, 0, page) == NG){return NULL;}
+    p = page;
+
+    //フィールド数を取得
+    memcpy(&tableInfo->numField, p, sizeof(tableInfo->numField));
+    p += sizeof(tableInfo->numField);
+
+    //フィールド名とフィールドタイプを個数分読み込み
+    for(i=0; i<(tableInfo->numField); ++i){
+        memcpy(tableInfo->fieldInfo[i].name, p, sizeof(tableInfo->fieldInfo[i].name));
+        p += sizeof(tableInfo->fieldInfo[i].name);
+
+        memcpy(&tableInfo->fieldInfo[i].dataType, p, sizeof(tableInfo->fieldInfo[i].name));
+        p += sizeof(tableInfo->fieldInfo[i].dataType);
+    }
+
+    //ファイルのクローズ
+    closeFile(file);
+
     return tableInfo;
 }
 

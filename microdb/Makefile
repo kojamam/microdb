@@ -1,6 +1,6 @@
 
 COMPILER = gcc
-CFLAGS = -g -O0
+CFLAGS = -g
 
 SOURCEDR = src
 INCLUDEDR = include
@@ -24,8 +24,8 @@ do-test: $(TESTDR)/test-file $(TESTDR)/test-datadef
 $(BINDR)/test-file: $(SOURCEDR)/test-file.o $(SOURCEDR)/file.o
 	$(COMPILER) -o $(TESTDR)/test-file $(CFLAGS) $(SOURCEDR)/test-file.o $(SOURCEDR)/file.o
 
-$(BINDR)/test-datadef: $(SOURCEDR)/test-datadef.o $(SOURCEDR)/datadef.o $(INCLUDEDR)/microdb.h
-	$(COMPILER) -o $(TESTDR)/test-datadef $(CFLAGS) $(SOURCEDR)/test-datadef.o $(SOURCEDR)/datadef.o $(INCLUDEDR)/microdb.h
+$(BINDR)/test-datadef: $(SOURCEDR)/test-datadef.o $(SOURCEDR)/datadef.o $(SOURCEDR)/file.o
+	$(COMPILER) -o $(TESTDR)/test-datadef $(CFLAGS) $(SOURCEDR)/test-datadef.o $(SOURCEDR)/datadef.o $(SOURCEDR)/file.o
 
 $(SOURCEDR)/%.o: $(SOURCEDR)/%.c $(INCLUDEDR)/microdb.h
 	$(COMPILER) -o $@ $(CFLAGS) -c $<
