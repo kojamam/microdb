@@ -60,6 +60,39 @@ Result finalizeDataDefModule()
  */
 Result createTable(char *tableName, TableInfo *tableInfo)
 {
+    File *file;
+    char filename[MAX_FIELD_NAME];
+    char page[PAGE_SIZE];
+    char *p;
+    int i;
+
+    /* ページの内容をクリアする */
+    memset(page, 0, PAGE_SIZE);
+    p = page;
+
+    /* ページの先頭にフィールド数を保存する */
+    memcpy(p, &tableInfo->numField, sizeof(tableInfo->numField));
+    p += sizeof(tableInfo->numField);
+
+    //他の情報(フィールド名、データ型など)を、配列pageにmemcpyでコピーする...
+    for(i=0; i<(tableInfo->numField); ++i){
+        memcpy(p, tableInfo->fieldInfo[i].name, sizeof(tableInfo->fieldInfo[i].name));
+        p += sizeof(tableInfo->fieldInfo[i].name);
+
+        memcpy(p, &tableInfo->fieldInfo[i].dataType, sizeof(tableInfo->fieldInfo[i].dataType));
+        p += sizeof(tableInfo->fieldInfo[i].dataType);
+
+    }
+
+    //ファイルを作成
+    sprintf(filename, "%s%s", tableName, DEF_FILE_EXT);
+    createFile(filename);
+
+    //ファイルをオープン
+    file = openFile(filename);
+
+    /* ファイルの先頭ページ(ページ番号0)に1ページ分のデータを書き込む */
+    writePage(file, 0, page);
     return OK;
 }
 
@@ -112,4 +145,5 @@ TableInfo *getTableInfo(char *tableName)
  */
 void freeTableInfo(TableInfo *tableInfo)
 {
+    free(tableInfo);
 }
