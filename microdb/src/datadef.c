@@ -66,30 +66,30 @@ Result createTable(char *tableName, TableInfo *tableInfo)
     char *p;
     int i;
 
+    //ファイルを作成
+    sprintf(filename, "%s%s", tableName, DEF_FILE_EXT);
+    if(createFile(filename) != OK){return NG;}
+
+    //ファイルをオープン
+    if((file = openFile(filename)) == NULL){return NG;}
+
     /* ページの内容をクリアする */
-    if(strcmp(memset(page, 0, PAGE_SIZE), "") == 0){return NG;}
+    memset(page, 0, PAGE_SIZE);
     p = page;
 
-    /* ページの先頭にフィールド数を保存する */ //TODO strcmpはおかしい？
-    if(strcmp(memcpy(p, &tableInfo->numField, sizeof(tableInfo->numField)), "") == 0){return NG;}
+    /* ページの先頭にフィールド数を保存する */
+    memcpy(p, &(tableInfo->numField), sizeof(tableInfo->numField));
     p += sizeof(tableInfo->numField);
 
     //他の情報(フィールド名、データ型など)を、配列pageにmemcpyでコピーする...
     for(i=0; i<(tableInfo->numField); ++i){
-        if(strcmp(memcpy(p, tableInfo->fieldInfo[i].name, sizeof(tableInfo->fieldInfo[i].name)), "") == 0){return NG;}
+        memcpy(p, tableInfo->fieldInfo[i].name, sizeof(tableInfo->fieldInfo[i].name));
         p += sizeof(tableInfo->fieldInfo[i].name);
 
-        if(strcmp(memcpy(p, &tableInfo->fieldInfo[i].dataType, sizeof(tableInfo->fieldInfo[i].dataType)), "") == 0){return NG;}
+        memcpy(p, &(tableInfo->fieldInfo[i].dataType), sizeof(tableInfo->fieldInfo[i].dataType));
         p += sizeof(tableInfo->fieldInfo[i].dataType);
 
     }
-
-    //ファイルを作成
-    sprintf(filename, "%s%s", tableName, DEF_FILE_EXT);
-    createFile(filename);
-
-    //ファイルをオープン
-    if((file = openFile(filename)) == NULL){return NG;}
 
     /* ファイルの先頭ページ(ページ番号0)に1ページ分のデータを書き込む */
     if(writePage(file, 0, page) == NG){return NG;}
@@ -155,16 +155,15 @@ TableInfo *getTableInfo(char *tableName)
     p = page;
 
     //フィールド数を取得
-    memcpy(&tableInfo->numField, p, sizeof(tableInfo->numField));
-    if(tableInfo->numField < 0){return NULL;}
+    memcpy(&(tableInfo->numField), p, sizeof(tableInfo->numField));
     p += sizeof(tableInfo->numField);
 
     //フィールド名とフィールドタイプを個数分読み込み
     for(i=0; i<(tableInfo->numField); ++i){
-        if(strcmp(memcpy(tableInfo->fieldInfo[i].name, p, sizeof(tableInfo->fieldInfo[i].name)), "") ==0){return NULL;}
+        memcpy(tableInfo->fieldInfo[i].name, p, sizeof(tableInfo->fieldInfo[i].name));
         p += sizeof(tableInfo->fieldInfo[i].name);
 
-        memcpy(&tableInfo->fieldInfo[i].dataType, p, sizeof(tableInfo->fieldInfo[i].name));
+        memcpy(&(tableInfo->fieldInfo[i].dataType), p, sizeof(tableInfo->fieldInfo[i].name));
         p += sizeof(tableInfo->fieldInfo[i].dataType);
     }
 
