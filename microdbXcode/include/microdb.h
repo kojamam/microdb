@@ -2,6 +2,13 @@
  * microdb.h - 共通定義ファイル
  */
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+
 /*
  * Result -- 成功/失敗を返す返り値
  */
@@ -37,6 +44,11 @@ struct File {
 #define MAX_FIELD_NAME 20
 
 /*
+ * MAX_STRING -- 文字列型データの長さの上限
+ */
+#define MAX_STRING 20
+
+/*
  * dataType -- データベースに保存するデータの型
  */
 typedef enum DataType DataType;
@@ -65,6 +77,47 @@ struct TableInfo {
 };
 
 /*
+ * FieldData -- 1つのフィールドのデータを表現する構造体
+ */
+typedef struct FieldData FieldData;
+struct FieldData {
+    char name[MAX_FIELD_NAME];		/* フィールド名 */
+    DataType dataType;			/* フィールドのデータ型 */
+    int intValue;			/* integer型の場合の値 */
+    char stringValue[MAX_STRING];	/* string型の場合の値 */
+};
+
+/*
+ * RecordData -- 1つのレコードのデータを表現する構造体
+ */
+typedef struct RecordData RecordData;
+struct RecordData {
+    int numField;			/* フィールド数 */
+    FieldData fieldData[MAX_FIELD];	/* フィールド情報 */
+    RecordData *next;
+};
+
+/*
+ * RecordSet -- レコードの集合を表現する構造体
+ */
+typedef struct RecordSet RecordSet;
+struct RecordSet {
+    int numRecord;			/* レコード数 */
+    RecordData *recordData;		/* レコードのリストへのポインタ */
+};
+
+/*
+ * Condition -- 検索条件を表現する構造体
+ */
+typedef struct Condition Condition;
+struct Condition {
+    /* ダミー */
+};
+
+
+
+
+/*
  * file.cに定義されている関数群
  */
 extern Result initializeFileModule();
@@ -87,3 +140,22 @@ extern Result dropTable(char *);
 extern TableInfo *getTableInfo(char *);
 extern void freeTableInfo(TableInfo *);
 extern void printTableInfo(char *);
+
+
+/*
+ * datamanip.cに定義されている関数群
+ */
+extern Result initializeDataManipModule();
+extern Result finalizeDataManipModule();
+extern RecordSet *selectRecord(char *, Condition *);
+extern void freeRecordSet(RecordSet *);
+extern Result createDataFile(char *);
+extern Result deleteDataFile(char *);
+extern void printRecordSet(RecordSet *);
+extern RecordSet *selectRecord(char *, Condition *);
+void freeRecordSet(RecordSet *);
+extern Result deleteRecord(char *, Condition *);
+extern Result createDataFile(char *);
+extern Result deleteDataFile(char *);
+extern void printRecodeSet(RecordSet *);
+

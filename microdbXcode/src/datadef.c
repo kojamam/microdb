@@ -2,10 +2,6 @@
  * datadef.c - データ定義モジュール
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
 #include "microdb.h"
 
 /*
