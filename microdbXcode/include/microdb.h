@@ -158,4 +158,3 @@ extern Result deleteRecord(char *, Condition *);
 extern Result createDataFile(char *);
 extern Result deleteDataFile(char *);
 extern void printRecodeSet(RecordSet *);
-
