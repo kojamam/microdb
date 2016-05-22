@@ -152,7 +152,7 @@ Result insertRecord(char *tableName, RecordData *recordData)
             q = p + recordSize;
             if (*q == 0) {
                 /* 見つけた空き領域に上で用意したバイト列recordを埋め込む */
-                memcpy(q, &record, sizeof(record));
+                memcpy(q, record, strlen(record));
                 
                 /* ファイルに書き戻す */
                 if (writePage(file, i, page) != OK) {
@@ -175,8 +175,8 @@ Result insertRecord(char *tableName, RecordData *recordData)
     memset(page, 0, PAGE_SIZE);
     p = page;
     
-    /* ページの先頭にrecordをコピー */
-    memcpy(page, record, sizeof(*record));
+    /* ペジの先頭にrecordをコピー */
+    memcpy(page, *record, recordSize);
     
     /* ページを書き込み */
     writePage(file, numPage, page);
@@ -227,9 +227,9 @@ static Result checkCondition(RecordData *recordData, Condition *condition)
  */
 RecordSet *selectRecord(char *tableName, Condition *condition)
 {
-    RecordSet recordSet;
+    RecordSet *recordSet;
     
-    return &recordSet;
+    return recordSet;
 }
 
 /*
