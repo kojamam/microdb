@@ -3,10 +3,8 @@
  */
 
 #include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "../include/microdb.h"
+
+#include "microdb.h"
 
 /*
  * main -- データ定義モジュールのテスト

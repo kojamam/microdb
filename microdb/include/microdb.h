@@ -2,6 +2,13 @@
  * microdb.h - 共通定義ファイル
  */
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+
 /*
  * Result -- 成功/失敗を返す返り値
  */
@@ -37,6 +44,11 @@ struct File {
 #define MAX_FIELD_NAME 20
 
 /*
+ * MAX_STRING -- 文字列型データの長さの上限
+ */
+#define MAX_STRING 64
+
+/*
  * dataType -- データベースに保存するデータの型
  */
 typedef enum DataType DataType;
@@ -65,6 +77,73 @@ struct TableInfo {
 };
 
 /*
+ * FieldData -- 1つのフィールドのデータを表現する構造体
+ */
+typedef struct FieldData FieldData;
+struct FieldData {
+    char name[MAX_FIELD_NAME];		/* フィールド名 */
+    DataType dataType;			/* フィールドのデータ型 */
+    int intValue;			/* integer型の場合の値 */
+    char stringValue[MAX_STRING];	/* string型の場合の値 */
+};
+
+/*
+ * RecordData -- 1つのレコードのデータを表現する構造体
+ */
+typedef struct RecordData RecordData;
+struct RecordData {
+    int numField;			/* フィールド数 */
+    FieldData fieldData[MAX_FIELD];	/* フィールド情報 */
+    RecordData *next;
+};
+
+/*
+ * RecordSet -- レコードの集合を表現する構造体
+ */
+typedef struct RecordSet RecordSet;
+struct RecordSet {
+    int numRecord;			/* レコード数 */
+    RecordData *recordData;		/* レコードのリストへのポインタ */
+};
+
+/*
+ * PageIndex -- ページ内のインデックス
+ */
+typedef struct RecordSlot RecordSlot;
+struct RecordSlot{
+    char flag;
+    int size;
+    int offset;
+};
+
+/*
+ * OpratorType -- 比較演算子を表す列挙型
+ */
+typedef enum OperatorType OperatorType;
+enum OperatorType {
+    OPR_EQUAL,				/* = */
+    OPR_NOT_EQUAL,			/* != */
+    OPR_GREATER_THAN,			/* > */
+    OPR_OR_GRATER_THAN,      /* >= */
+    OPR_LESS_THAN,			/* < */
+    OPR_OR_LESS_THAN        /* <= */
+};
+
+/*
+ * Condition -- 検索や削除の条件式を表現する構造体
+ */
+typedef struct Condition Condition;
+struct Condition {
+    char name[MAX_FIELD_NAME];		/* フィールド名 */
+    DataType dataType;			/* フィールドのデータ型 */
+    OperatorType operator;		/* 比較演算子 */
+    int intValue;			/* integer型の場合の値 */
+    char stringValue[MAX_STRING];	/* string型の場合の値 */
+};
+
+
+
+/*
  * file.cに定義されている関数群
  */
 extern Result initializeFileModule();
@@ -86,3 +165,24 @@ extern Result createTable(char *, TableInfo *);
 extern Result dropTable(char *);
 extern TableInfo *getTableInfo(char *);
 extern void freeTableInfo(TableInfo *);
+extern void printTableInfo(char *);
+
+
+/*
+ * datamanip.cに定義されている関数群
+ */
+extern Result initializeDataManipModule();
+extern Result finalizeDataManipModule();
+extern RecordSet *selectRecord(char *, Condition *);
+extern void freeRecordSet(RecordSet *);
+extern Result createDataFile(char *);
+extern Result deleteDataFile(char *);
+extern void printRecordSet(RecordSet *);
+extern RecordSet *selectRecord(char *, Condition *);
+void freeRecordSet(RecordSet *);
+extern Result deleteRecord(char *, Condition *);
+extern Result createDataFile(char *);
+extern Result deleteDataFile(char *);
+extern void printRecodeSet(RecordSet *);
+extern Result insertRecord(char *, RecordData *);
+
