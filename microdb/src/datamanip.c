@@ -257,9 +257,6 @@ Result insertRecord(char *tableName, RecordData *recordData)
 }
 
 
-
-/* ------ ■■これ以降の関数は、次回以降の実験で説明の予定 ■■ ----- */
-
 /*
 * checkCondition -- レコードが条件を満足するかどうかのチェック
 *
@@ -340,6 +337,7 @@ RecordSet *selectRecord(char *tableName, Condition *condition)
                 int stringLen;
 
                 for (k = 0; k < tableInfo->numField; k++) {
+                    strcpy(recordData->fieldData[i].name, tableInfo->fieldInfo[i].name);
                     switch (tableInfo->fieldInfo[k].dataType) {
                         case TYPE_INTEGER:
                             /* 整数の時、そのままコピーしてポインタを進める */
@@ -402,6 +400,15 @@ RecordSet *selectRecord(char *tableName, Condition *condition)
 */
 void freeRecordSet(RecordSet *recordSet)
 {
+    RecordData *prevRecordData, *nextRecordData;
+    
+    prevRecordData = recordSet->recordData;
+    free(recordSet);
+    
+    while(nextRecordData != NULL){
+        nextRecordData = prevRecordData->next;
+        free(prevRecordData);
+    }
 }
 
 /*
