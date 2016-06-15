@@ -1,6 +1,141 @@
+/*
+ * データ操作モジュールテストプログラム
+ */
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "microdb.h"
+
+#define TABLE_NAME "student"
+
+/*
+ * test1 -- レコードの挿入
+ */
+Result test1()
+{
+    RecordData record;
+    int i;
+    
+    /*
+     * 以下のレコードを挿入
+     * ('i00001', 'Mickey', 20, 'Urayasu')
+     */
+    i = 0;
+    strcpy(record.fieldData[i].name, "id");
+    record.fieldData[i].dataType = TYPE_STRING;
+    strcpy(record.fieldData[i].stringValue, "i00001");
+    i++;
+    
+    strcpy(record.fieldData[i].name, "name");
+    record.fieldData[i].dataType = TYPE_STRING;
+    strcpy(record.fieldData[i].stringValue, "Mickey");
+    i++;
+    
+    strcpy(record.fieldData[i].name, "age");
+    record.fieldData[i].dataType = TYPE_INTEGER;
+    record.fieldData[i].intValue = 20;
+    i++;
+    
+    strcpy(record.fieldData[i].name, "address");
+    record.fieldData[i].dataType = TYPE_STRING;
+    strcpy(record.fieldData[i].stringValue, "Urayasu");
+    i++;
+    
+    record.numField = i;
+    
+    if (insertRecord(TABLE_NAME, &record) != OK) {
+        fprintf(stderr, "Cannot insert record.\n");
+        return NG;
+    }
+
+    
+    return OK;
+}
 
 
-int main (void){
-    return 0;
+
+/*
+ * main -- データ操作モジュールのテスト
+ */
+int main(int argc, char **argv)
+{
+    char tableName[20];
+    TableInfo tableInfo;
+    int i;
+    
+    /* ファイルモジュールを初期化する */
+    if (initializeFileModule() != OK) {
+        fprintf(stderr, "Cannot initialize file module.\n");
+        exit(1);
+    }
+    
+    /* データ定義ジュールを初期化する */
+    if (initializeDataDefModule() != OK) {
+        fprintf(stderr, "Cannot initialize data definition module.\n");
+        exit(1);
+    }
+    
+    /* データ操作ジュールを初期化する */
+    if (initializeDataManipModule() != OK) {
+        fprintf(stderr, "Cannot initialize data manipulation module.\n");
+        exit(1);
+    }
+    
+    /*
+     * このプログラムの前回の実行の時のデータ定義残っている可能性があるので、
+     * とりあえず削除する
+     */
+    dropTable(TABLE_NAME);
+    
+    /*
+     * 以下のテーブルを作成
+     * create table student (
+     *   id string,
+     *   name string,
+     *   age integer,
+     *   address string
+     * )
+     */
+    strcpy(tableName, TABLE_NAME);
+    i = 0;
+    
+    strcpy(tableInfo.fieldInfo[i].name, "id");
+    tableInfo.fieldInfo[i].dataType = TYPE_STRING;
+    i++;
+    
+    strcpy(tableInfo.fieldInfo[i].name, "name");
+    tableInfo.fieldInfo[i].dataType = TYPE_STRING;
+    i++;
+    
+    strcpy(tableInfo.fieldInfo[i].name, "age");
+    tableInfo.fieldInfo[i].dataType = TYPE_INTEGER;
+    i++;
+    
+    strcpy(tableInfo.fieldInfo[i].name, "address");
+    tableInfo.fieldInfo[i].dataType = TYPE_STRING;
+    i++;
+    
+    tableInfo.numField = i;
+    
+    /* テーブルの作成 */
+    if (createTable(tableName, &tableInfo) != OK) {
+        /* テーブルの作成に失敗 */
+        fprintf(stderr, "Cannot create table.\n");
+        exit(1);
+    }
+    
+    /* 挿入テスト */
+    fprintf(stderr, "test1: Start\n\n");
+    if (test1() == OK) {
+        fprintf(stderr, "test1: OK\n\n");
+    } else {
+        fprintf(stderr, "test1: NG\n\n");
+    }
+    
+    /* 後始末 */
+    dropTable(TABLE_NAME);
+    finalizeDataManipModule();
+    finalizeDataDefModule();
+    finalizeFileModule();
 }
