@@ -537,14 +537,14 @@ Result createDataFile(char *tableName)
 }
 
 /*
-* deleteDataFile -- データファイルの削除
-*
-* 引数:
-*	tableName: 削除するテーブルの名前
-*
-* 返り値:
-*	削除に成功したらOK、失敗したらNGを返す
-*/
+ * deleteDataFile -- データファイルの削除
+ *
+ * 引数:
+ *	tableName: 削除するテーブルの名前
+ *
+ * 返り値:
+ *	削除に成功したらOK、失敗したらNGを返す
+ */
 Result deleteDataFile(char *tableName)
 {
     char filename[MAX_FILENAME];
@@ -554,18 +554,135 @@ Result deleteDataFile(char *tableName)
     if(deleteFile(filename) != OK){
         return NG;
     }
+    
     return OK;
 }
 
 /*
-* printRecordSet -- レコード集合の表示
-*
-* 引数:
-*	recordSet: 表示するレコード集合
-*
-* 返り値:
-*	なし
-*/
+ * printTableData -- すべてのデータの表示(テスト用)
+ *
+ * 引数:
+ *	tableName: データを表示するテーブルの名前
+ */
+void printTableData(char *tableName)
+{
+    RecordSet *recordSet;
+    char filename[MAX_FILENAME];
+    File *file;
+    int numPage;
+    TableInfo *tableInfo;
+    int i, j, k;
+    char page[PAGE_SIZE];
+    int numRecordSlot;
+    char *p, *q;
+    RecordSlot recordSlot;
+    
+    recordSet = (RecordSet*)malloc(sizeof(RecordSet));
+    
+    sprintf(filename, "%s%s", tableName, DATA_FILE_EXT);
+    file = openFile(filename);
+    
+    numPage = getNumPages(filename);
+    
+    /*テーブル情報の取得*/
+    if((tableInfo = getTableInfo(tableName)) == NULL){
+        return; //エラー処理
+    }
+    
+    /* ページ数分だけ繰り返す */
+    for (i=0; i<numPage; ++i) {
+        readPage(file, i, page);
+        
+        /*スロットの数*/
+        memcpy(&numRecordSlot, page, sizeof(int));
+        
+        p = page + sizeof(int);
+        
+        /* スロットを見ていく */
+        for (j=0; j<numRecordSlot; ++j) {
+            int intValue;
+            char stringValue[MAX_STRING];
+            memcpy(&recordSlot.flag, p, sizeof(char));
+            memcpy(&recordSlot.size, p+sizeof(char), sizeof(int));
+            memcpy(&recordSlot.offset,p+sizeof(char)+sizeof(int), sizeof(int));
+            
+            q = page + recordSlot.offset;
+            
+            /* レコードがあったら表示 */
+            if(recordSlot.flag == 1){
+                int stringLen;
+                
+                for (k = 0; k < tableInfo->numField; k++) {
+                    printf("%s : ", tableInfo->fieldInfo[k].name);
+                    switch (tableInfo->fieldInfo[k].dataType) {
+                        case TYPE_INTEGER:
+                            /* 整数の時、表示 */
+                            memcpy(&intValue, q, sizeof(int));
+                            q += sizeof(int);
+                            printf("%d\n", intValue);
+                            break;
+                        case TYPE_STRING:
+                            /* 文字列の時、表示 */
+                            memcpy(&stringLen, q, sizeof(int));
+                            q += sizeof(int);
+                            strcpy(stringValue, q);
+                            q += stringLen+1; // '\0'の分も進む
+                            printf("%s\n", stringValue);
+                            break;
+                        default:
+                            /* ここにくることはないはず */
+                            freeTableInfo(tableInfo);
+                            return ;
+                    }
+                    printf("\n");
+                }/* レコードの読み込み終わり */
+                
+            }
+            
+            /* 次のスロットを見る */
+            p += sizeof(char) + sizeof(int) * 2;
+        }/* スロット繰り返し */
+        
+    }/*ページ繰り返し*/
+    
+    return;
+
+}
+
+/*
+ * printRecordSet -- レコード集合の表示
+ *
+ * 引数:
+ *	recordSet: 表示するレコード集合
+ */
 void printRecordSet(RecordSet *recordSet)
 {
+    RecordData *record;
+    int i;
+    
+    /* レコード数の表示 */
+    printf("Number of Records: %d\n", recordSet->numRecord);
+    
+    /* レコードを1つずつ取りだし、表示する */
+    for (record = recordSet->recordData; record != NULL; record = record->next) {
+        /* すべてのフィールドのフィールド名とフィールド値を表示する */
+        for (i = 0; i < record->numField; i++) {
+            printf("Field %s = ", record->fieldData[i].name);
+            
+            switch (record->fieldData[i].dataType) {
+                case TYPE_INTEGER:
+                    printf("%d\n", record->fieldData[i].intValue);
+                    break;
+                case TYPE_STRING:
+                    printf("%s\n", record->fieldData[i].stringValue);
+                    break;
+                default:
+                    /* ここに来ることはないはず */
+                    return;
+            }
+        }
+        
+        printf("\n");
+    }
 }
+
