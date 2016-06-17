@@ -57,14 +57,17 @@ Result finalizeDataDefModule()
 Result createTable(char *tableName, TableInfo *tableInfo)
 {
     File *file;
-    char filename[MAX_FIELD_NAME];
+    char filename[MAX_FILENAME];
     char page[PAGE_SIZE];
     char *p;
     int i;
 
     //ファイルを作成
     sprintf(filename, "%s%s", tableName, DEF_FILE_EXT);
-    if(createFile(filename) != OK){return NG;}
+    if(createFile(filename) != OK || createDataFile(tableName) != OK){
+        return NG;
+    }
+    
 
     //ファイルをオープン
     if((file = openFile(filename)) == NULL){return NG;}
@@ -110,7 +113,9 @@ Result dropTable(char *tableName)
 
     //テーブル定義情報ファイルの削除
     sprintf(filename, "%s%s", tableName, DEF_FILE_EXT);
-    if(deleteFile(filename) == NG){return NG;}
+    if(deleteFile(filename) != OK || deleteDataFile(tableName) != OK){
+        return NG;
+    }
 
     return OK;
 }

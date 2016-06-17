@@ -13,6 +13,7 @@
 		EB4687C51CE5B4940076184D /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = EB4687B61CE5B3320076184D /* file.c */; };
 		EB4687C61CE5B4F30076184D /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = EB4687B61CE5B3320076184D /* file.c */; };
 		EB4687C71CE5B4F90076184D /* test-file.c in Sources */ = {isa = PBXBuildFile; fileRef = EB4687BD1CE5B39B0076184D /* test-file.c */; };
+		EB6767621D13DD340058F79D /* datamanip.c in Sources */ = {isa = PBXBuildFile; fileRef = EBC9743C1CEC24550091D221 /* datamanip.c */; };
 		EBC9743D1CEC24550091D221 /* datamanip.c in Sources */ = {isa = PBXBuildFile; fileRef = EBC9743C1CEC24550091D221 /* datamanip.c */; };
 		EBC9743F1CEC24640091D221 /* test-datamanip.c in Sources */ = {isa = PBXBuildFile; fileRef = EBC9743E1CEC24640091D221 /* test-datamanip.c */; };
 		EBC974401CEC69280091D221 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = EB4687B61CE5B3320076184D /* file.c */; };
@@ -265,6 +266,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB6767621D13DD340058F79D /* datamanip.c in Sources */,
 				EB4687C51CE5B4940076184D /* file.c in Sources */,
 				EB4687C01CE5B3A50076184D /* datadef.c in Sources */,
 				EB4687C21CE5B3AB0076184D /* test-datadef.c in Sources */,
@@ -485,6 +487,7 @@
 				EBC9743A1CEC243E0091D221 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

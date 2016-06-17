@@ -304,7 +304,7 @@ RecordSet *selectRecord(char *tableName, Condition *condition)
     
     recordSet = (RecordSet*)malloc(sizeof(RecordSet));
     
-    sscanf(filename, "%s%s", tableName, DATA_FILE_EXT);
+    sprintf(filename, "%s%s", tableName, DATA_FILE_EXT);
     file = openFile(filename);
     
     numPage = getNumPages(filename);
@@ -323,7 +323,7 @@ RecordSet *selectRecord(char *tableName, Condition *condition)
         
         p = page + sizeof(int);
         
-        /* スロットを見て空きを探す */
+        /* スロットを見ていく */
         for (j=0; j<numRecordSlot; ++j) {
             memcpy(&recordSlot.flag, p, sizeof(char));
             memcpy(&recordSlot.size, p+sizeof(char), sizeof(int));
@@ -423,6 +423,94 @@ void freeRecordSet(RecordSet *recordSet)
 */
 Result deleteRecord(char *tableName, Condition *condition)
 {
+    
+    RecordSet *recordSet;
+    char filename[MAX_FILENAME];
+    File *file;
+    int numPage;
+    TableInfo *tableInfo;
+    int i, j, k;
+    char page[PAGE_SIZE];
+    int numRecordSlot;
+    char *p, *q;
+    RecordSlot recordSlot;
+    
+    recordSet = (RecordSet*)malloc(sizeof(RecordSet));
+    
+    sprintf(filename, "%s%s", tableName, DATA_FILE_EXT);
+    file = openFile(filename);
+    
+    numPage = getNumPages(filename);
+    
+    /*テーブル情報の取得*/
+    if((tableInfo = getTableInfo(tableName)) == NULL){
+        return NG; //エラー処理
+    }
+    
+    /* ページ数分だけ繰り返す */
+    for (i=0; i<numPage; ++i) {
+        readPage(file, i, page);
+        
+        /*スロットの数*/
+        memcpy(&numRecordSlot, page, sizeof(int));
+        
+        p = page + sizeof(int);
+        
+        /* スロットを見ていく */
+        for (j=0; j<numRecordSlot; ++j) {
+            memcpy(&recordSlot.flag, p, sizeof(char));
+            memcpy(&recordSlot.size, p+sizeof(char), sizeof(int));
+            memcpy(&recordSlot.offset,p+sizeof(char)+sizeof(int), sizeof(int));
+            
+            q = page + recordSlot.offset;
+            
+            /* レコードがあったら読み込み */
+            if(recordSlot.flag == 1){
+                RecordData *recordData = (RecordData*)malloc(sizeof(RecordData));
+                int stringLen;
+                
+                for (k = 0; k < tableInfo->numField; k++) {
+                    strcpy(recordData->fieldData[i].name, tableInfo->fieldInfo[i].name);
+                    switch (tableInfo->fieldInfo[k].dataType) {
+                        case TYPE_INTEGER:
+                            /* 整数の時、そのままコピーしてポインタを進める */
+                            memcpy(&recordData->fieldData[i].intValue, q, sizeof(int));
+                            q += sizeof(int);
+                            break;
+                        case TYPE_STRING:
+                            /* 文字列の時、文字列の長さを先頭に格納してから文字列を格納 */
+                            memcpy(&stringLen, q, sizeof(int));
+                            q += sizeof(int);
+                            strcpy(recordData->fieldData[i].stringValue, q);
+                            q += stringLen+1; // '\0'の分も進む
+                            break;
+                        default:
+                            /* ここにくることはないはず */
+                            freeTableInfo(tableInfo);
+                            free(recordData);
+                            return NG;
+                    }
+                }/* レコードの読み込み終わり */
+                
+                /*条件を満足するかを確認して満たしていたら削除 */
+                if(checkCondition(recordData, condition) == OK){
+                    /* 0埋め */
+                    memset(page, recordSlot.offset, recordSlot.size);
+                    /* スロットの更新　*/
+                    recordSlot.flag = 0;
+                    memcpy(p, &recordSlot.flag, sizeof(char));
+                    memcpy(p+sizeof(char), &recordSlot.size, sizeof(int));
+                    memcpy(p+sizeof(char)+sizeof(int), &recordSlot.offset, sizeof(int));
+                }/* TODO 隣のスロットと統合 */
+                free(recordData);
+            }
+            
+            /* 次のスロットを見る */
+            p += sizeof(char) + sizeof(int) * 2;
+        }/* スロット繰り返し */
+        
+    }/*ページ繰り返し*/
+
     return OK;
 }
 
@@ -437,6 +525,14 @@ Result deleteRecord(char *tableName, Condition *condition)
 */
 Result createDataFile(char *tableName)
 {
+    char filename[MAX_FILENAME];
+    
+    sprintf(filename, "%s%s", tableName, DATA_FILE_EXT);
+    
+    if(createFile(filename) != OK){
+        return NG;
+    }
+
     return OK;
 }
 
@@ -451,6 +547,13 @@ Result createDataFile(char *tableName)
 */
 Result deleteDataFile(char *tableName)
 {
+    char filename[MAX_FILENAME];
+    
+    sprintf(filename, "%s%s", tableName, DATA_FILE_EXT);
+    
+    if(deleteFile(filename) != OK){
+        return NG;
+    }
     return OK;
 }
 
