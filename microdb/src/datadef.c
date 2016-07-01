@@ -2,7 +2,7 @@
  * datadef.c - データ定義モジュール
  */
 
-#include "microdb.h"
+#include "../include/microdb.h"
 
 /*
  * DEF_FILE_EXT -- データ定義ファイルの拡張子

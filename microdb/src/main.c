@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include "microdb.h"
+#include "../include/microdb.h"
 
 int main(int argc, const char * argv[]) {
     // insert code here...

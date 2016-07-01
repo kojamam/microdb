@@ -2,7 +2,7 @@
  * file.c -- ファイルアクセスモジュール
  */
 
-#include "microdb.h"
+#include "../include/microdb.h"
 
 #define  DE 2
 

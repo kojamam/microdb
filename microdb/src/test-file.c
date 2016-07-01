@@ -3,7 +3,7 @@
  */
 
 #include <time.h>
-#include "microdb.h"
+#include "../include/microdb.h"
 
 /*
  * テスト名

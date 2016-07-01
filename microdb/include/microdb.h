@@ -49,6 +49,11 @@ struct File {
 #define MAX_STRING 64
 
 /*
+ * COLUMN_WIDTH -- テーブル表示時のカラムの幅
+ */
+#define COLUMN_WIDTH 12
+
+/*
  * dataType -- データベースに保存するデータの型
  */
 typedef enum DataType DataType;
@@ -111,9 +116,10 @@ struct RecordSet {
  */
 typedef struct RecordSlot RecordSlot;
 struct RecordSlot{
+    int num;
     char flag;
-    int size;
     int offset;
+    int size;
 };
 
 /*
@@ -179,10 +185,16 @@ extern Result createDataFile(char *);
 extern Result deleteDataFile(char *);
 extern void printRecordSet(RecordSet *);
 extern RecordSet *selectRecord(char *, Condition *);
-void freeRecordSet(RecordSet *);
+extern void freeRecordSet(RecordSet *);
 extern Result deleteRecord(char *, Condition *);
-extern Result createDataFile(char *);
 extern Result deleteDataFile(char *);
 extern void printRecodeSet(RecordSet *);
 extern Result insertRecord(char *, RecordData *);
-
+extern void copySlotToPage(char *, int, RecordSlot *);
+extern char* createRecordString(TableInfo *, RecordData *, int);
+extern RecordSlot* readSlotFromPage(char *, int );
+extern Result writeSlotToPage(char *, RecordSlot *);
+extern int incrementNumSlot(char*);
+extern int decrementNumSlot(char*);
+extern Result initializePage(char*);
+extern void insertLine(int, int);

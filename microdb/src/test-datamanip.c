@@ -2,7 +2,7 @@
  * データ操作モジュールテストプログラム
  */
 
-#include "microdb.h"
+#include "../include/microdb.h"
 
 #define TABLE_NAME "student"
 
@@ -306,21 +306,21 @@ int main(int argc, char **argv)
         fprintf(stderr, "test1: NG\n\n");
     }
     
-    /* 検索テスト */
-    fprintf(stderr, "test2: Start\n\n");
-    if (test2() == OK) {
-        fprintf(stderr, "test2: OK\n\n");
-    } else {
-        fprintf(stderr, "test2: NG\n\n");
-    }
-    
-    /* 削除テスト */
-    fprintf(stderr, "test3: Start\n\n");
-    if (test3() == OK) {
-        fprintf(stderr, "test3: OK\n\n");
-    } else {
-        fprintf(stderr, "test3: NG\n\n");
-    }
+//    /* 検索テスト */
+//    fprintf(stderr, "test2: Start\n\n");
+//    if (test2() == OK) {
+//        fprintf(stderr, "test2: OK\n\n");
+//    } else {
+//        fprintf(stderr, "test2: NG\n\n");
+//    }
+//    
+//    /* 削除テスト */
+//    fprintf(stderr, "test3: Start\n\n");
+//    if (test3() == OK) {
+//        fprintf(stderr, "test3: OK\n\n");
+//    } else {
+//        fprintf(stderr, "test3: NG\n\n");
+//    }
     
     /* 後始末 */
     dropTable(TABLE_NAME);

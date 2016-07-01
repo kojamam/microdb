@@ -4,7 +4,7 @@
 
 #include <time.h>
 
-#include "microdb.h"
+#include "../include/microdb.h"
 
 /*
  * main -- データ定義モジュールのテスト
