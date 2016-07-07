@@ -648,7 +648,7 @@ void printTableData(char *tableName)
     RecordSet *recordSet;
     char filename[MAX_FILENAME];
     File *file;
-    int numPage;
+    int numPage, numRecord = 0;
     TableInfo *tableInfo;
     int i, j, k;
     char page[PAGE_SIZE];
@@ -695,6 +695,7 @@ void printTableData(char *tableName)
             }
 
         }
+        printf("\n");
         insertLine(tableInfo->numField, COLUMN_WIDTH);
 
         /* スロットを見ていく */
@@ -711,6 +712,7 @@ void printTableData(char *tableName)
 
             /* レコードがあったら表示 */
             if(recordSlot.flag == 1){
+                numRecord++;
 
                 printf("|");
 
@@ -737,7 +739,8 @@ void printTableData(char *tableName)
                     }
 
                 }/* レコードの読み込み終わり */
-                insertLine(tableInfo->numField, 12);
+                
+                printf("\n");
             }
 
 
@@ -746,6 +749,9 @@ void printTableData(char *tableName)
         }/* スロット繰り返し */
 
     }/*ページ繰り返し*/
+    
+    insertLine(tableInfo->numField, 12);
+    printf("%d rows in set\n", numRecord);
 
     return;
 
@@ -760,7 +766,6 @@ void printTableData(char *tableName)
  */
 void insertLine(int n, int m){
     int i;
-    printf("\n");
     for (i = 0; i < n*m+1; i++) {
         if(i%m == 0){printf("+");}
         else{printf("-");}
