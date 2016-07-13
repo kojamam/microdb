@@ -130,7 +130,7 @@ enum OperatorType {
     OPR_EQUAL,				/* = */
     OPR_NOT_EQUAL,			/* != */
     OPR_GREATER_THAN,			/* > */
-    OPR_OR_GRATER_THAN,      /* >= */
+    OPR_OR_GREATER_THAN,      /* >= */
     OPR_LESS_THAN,			/* < */
     OPR_OR_LESS_THAN        /* <= */
 };
@@ -194,7 +194,7 @@ extern void copySlotToPage(char *, int, RecordSlot *);
 extern char* createRecordString(TableInfo *, RecordData *, int);
 extern RecordSlot* readSlotFromPage(char *, int );
 extern Result writeSlotToPage(char *, RecordSlot *);
-extern int incrementNumSlot(char*);
+extern int changeNumSlot(char*, int);
 extern int decrementNumSlot(char*);
 extern Result initializePage(char*);
 extern void insertLine(int, int);
