@@ -15,6 +15,10 @@
 		EB4687C71CE5B4F90076184D /* test-file.c in Sources */ = {isa = PBXBuildFile; fileRef = EB4687BD1CE5B39B0076184D /* test-file.c */; };
 		EB6767621D13DD340058F79D /* datamanip.c in Sources */ = {isa = PBXBuildFile; fileRef = EBC9743C1CEC24550091D221 /* datamanip.c */; };
 		EB6767631D13E52A0058F79D /* datadef.c in Sources */ = {isa = PBXBuildFile; fileRef = EB4687BF1CE5B3A50076184D /* datadef.c */; settings = {COMPILER_FLAGS = "-O2"; }; };
+		EB90FBA71D35F9CF002737A7 /* datamanip.c in Sources */ = {isa = PBXBuildFile; fileRef = EBC9743C1CEC24550091D221 /* datamanip.c */; };
+		EB90FBA81D35F9D9002737A7 /* datadef.c in Sources */ = {isa = PBXBuildFile; fileRef = EB4687BF1CE5B3A50076184D /* datadef.c */; };
+		EB90FBA91D35F9DD002737A7 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = EB4687B61CE5B3320076184D /* file.c */; };
+		EB90FBAA1D35F9E0002737A7 /* microdb.h in Sources */ = {isa = PBXBuildFile; fileRef = EB4687BA1CE5B37D0076184D /* microdb.h */; };
 		EBC9743D1CEC24550091D221 /* datamanip.c in Sources */ = {isa = PBXBuildFile; fileRef = EBC9743C1CEC24550091D221 /* datamanip.c */; settings = {COMPILER_FLAGS = "-O2"; }; };
 		EBC9743F1CEC24640091D221 /* test-datamanip.c in Sources */ = {isa = PBXBuildFile; fileRef = EBC9743E1CEC24640091D221 /* test-datamanip.c */; settings = {COMPILER_FLAGS = "-O2"; }; };
 		EBC974401CEC69280091D221 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = EB4687B61CE5B3320076184D /* file.c */; settings = {COMPILER_FLAGS = "-O2"; }; };
@@ -286,6 +290,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB90FBAA1D35F9E0002737A7 /* microdb.h in Sources */,
+				EB90FBA91D35F9DD002737A7 /* file.c in Sources */,
+				EB90FBA81D35F9D9002737A7 /* datadef.c in Sources */,
+				EB90FBA71D35F9CF002737A7 /* datamanip.c in Sources */,
 				EB4687C41CE5B4620076184D /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
