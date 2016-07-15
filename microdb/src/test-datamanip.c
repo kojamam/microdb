@@ -209,7 +209,7 @@ Result test3()
     Condition condition;
 
     /*
-     * 以下の検索を実行
+     * 以下のクエリを実行
      * delete from TABLE_NAME where name != 'Mickey'
      */
     strcpy(condition.name, "name");
@@ -218,6 +218,18 @@ Result test3()
     strcpy(condition.stringValue, "Mickey");
 
     if (deleteRecord(TABLE_NAME, &condition) != OK) {
+        fprintf(stderr, "Cannot delete records.\n");
+        return NG;
+    }
+
+    /* データを表示する */
+    printTableData(TABLE_NAME);
+    
+    /*
+     * 以下のクエリを実行
+     * delete from TABLE_NAME 
+     */
+    if (deleteRecord(TABLE_NAME, NULL) != OK) {
         fprintf(stderr, "Cannot delete records.\n");
         return NG;
     }

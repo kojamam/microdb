@@ -644,7 +644,7 @@ Result deleteRecord(char *tableName, Condition *condition)
                 }/* レコードの読み込み終わり */
 
                 /*条件を満足するかを確認して満たしていたら削除 */
-                if(checkCondition(recordData, condition) == OK){
+                if(condition == NULL || checkCondition(recordData, condition) == OK){
                     /* 0埋め */
                     memset(page+recordSlot.offset, 0, recordSlot.size);
                     /* スロットの更新*/
