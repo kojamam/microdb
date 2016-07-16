@@ -409,6 +409,8 @@ void callInsertRecord()
         return;
     }
     
+    recordData.next = NULL;
+    
     insertRecord(tableName, &recordData);
     
 }
@@ -432,6 +434,7 @@ void callSelectRecord()
     char *tableName;
     TableInfo *tableInfo;
     Condition cond;
+    RecordSet *recordSet;
     int i;
     
     
@@ -570,7 +573,18 @@ void callSelectRecord()
         exit(1);
     }
     
-    selectRecord(tableName, &cond);
+    /*selectRecoredの呼び出し*/
+    if ((recordSet = selectRecord(tableName, &cond)) == NULL) {
+        fprintf(stderr, "Cannot select records.\n");
+        return;
+    }
+    
+    /* 結果を表示 */
+    printRecordSet(recordSet);
+    
+    /* 結果を解放 */
+    freeRecordSet(recordSet);
+
 }
 
 /*

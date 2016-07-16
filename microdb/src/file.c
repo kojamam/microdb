@@ -15,8 +15,7 @@
  * 返り値:
  *	成功の場合OK、失敗の場合NG
  */
-Result initializeFileModule()
-{
+Result initializeFileModule(){
     return OK;
 }
 
@@ -29,8 +28,7 @@ Result initializeFileModule()
  * 返り値:
  *	成功の場合OK、失敗の場合NG
  */
-Result finalizeFileModule()
-{
+Result finalizeFileModule(){
     return OK;
 }
 
@@ -43,8 +41,7 @@ Result finalizeFileModule()
  * 返り値:
  *	成功の場合OK、失敗の場合NG
  */
-Result createFile(char *filename)
-{
+Result createFile(char *filename){
     int fd;
     if((fd = creat(filename, S_IRUSR|S_IWUSR)) == -1){
         return NG;
@@ -62,8 +59,7 @@ Result createFile(char *filename)
  * 返り値:
  *	成功の場合OK、失敗の場合NG
  */
-Result deleteFile(char *filename)
-{
+Result deleteFile(char *filename){
     if(unlink(filename)  == -1){
         return NG;
     }
@@ -80,8 +76,7 @@ Result deleteFile(char *filename)
  *	オープンしたファイルのFile構造体
  *	オープンに失敗した場合にはNULLを返す
  */
-File *openFile(char *filename)
-{
+File *openFile(char *filename){
     File *file;
     file = malloc(sizeof(File));
 
@@ -103,8 +98,7 @@ File *openFile(char *filename)
  * 返り値:
  *	成功の場合OK、失敗の場合NG
  */
-Result closeFile(File *file)
-{
+Result closeFile(File *file){
     if(close(file->desc) == -1){
         return NG;
     }
@@ -123,8 +117,7 @@ Result closeFile(File *file)
  * 返り値:
  *	成功の場合OK、失敗の場合NG
  */
-Result readPage(File *file, int pageNum, char *page)
-{
+Result readPage(File *file, int pageNum, char *page){
     if(lseek(file->desc, pageNum*PAGE_SIZE, SEEK_SET)  == -1){
         return NG;
     }
@@ -145,8 +138,7 @@ Result readPage(File *file, int pageNum, char *page)
  * 返り値:
  *	成功の場合OK、失敗の場合NG
  */
-Result writePage(File *file, int pageNum, char *page)
-{
+Result writePage(File *file, int pageNum, char *page){
     if(lseek(file->desc, pageNum*PAGE_SIZE, SEEK_SET)  == -1){
         return NG;
     }
@@ -166,8 +158,7 @@ Result writePage(File *file, int pageNum, char *page)
  *	引数で指定されたファイルの大きさ(ページ数)
  *	エラーの場合には-1を返す
  */
-int getNumPages(char *filename)
-{
+int getNumPages(char *filename){
     int pageCount;
     struct stat statBuf;
     int fileSize;

@@ -172,7 +172,7 @@ Result test2()
 
     /* 結果を表示 */
     printf("age > 17\n");
-     printRecordSet(recordSet);
+     printRecordSet(TABLE_NAME, recordSet);
 
     /* 結果を解放 */
     freeRecordSet(recordSet);
@@ -193,7 +193,7 @@ Result test2()
 
     /* 結果を表示 */
     printf("address != 'Florida'\n");
-     printRecordSet(recordSet);
+    printRecordSet(TABLE_NAME, recordSet);
 
     /* 結果を解放 */
     freeRecordSet(recordSet);
@@ -224,6 +224,8 @@ Result test3()
 
     /* データを表示する */
     printTableData(TABLE_NAME);
+    
+    printf("\n");
     
     /*
      * 以下のクエリを実行
@@ -318,13 +320,13 @@ int main(int argc, char **argv)
         fprintf(stderr, "test1: NG\n\n");
     }
 
-//    /* 検索テスト */
-//    fprintf(stderr, "test2: Start\n\n");
-//    if (test2() == OK) {
-//        fprintf(stderr, "test2: OK\n\n");
-//    } else {
-//        fprintf(stderr, "test2: NG\n\n");
-//    }
+    /* 検索テスト */
+    fprintf(stderr, "test2: Start\n\n");
+    if (test2() == OK) {
+        fprintf(stderr, "test2: OK\n\n");
+    } else {
+        fprintf(stderr, "test2: NG\n\n");
+    }
 
     /* 削除テスト */
     fprintf(stderr, "test3: Start\n\n");

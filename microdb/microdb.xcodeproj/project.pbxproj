@@ -15,6 +15,8 @@
 		EB4687C71CE5B4F90076184D /* test-file.c in Sources */ = {isa = PBXBuildFile; fileRef = EB4687BD1CE5B39B0076184D /* test-file.c */; };
 		EB6767621D13DD340058F79D /* datamanip.c in Sources */ = {isa = PBXBuildFile; fileRef = EBC9743C1CEC24550091D221 /* datamanip.c */; };
 		EB6767631D13E52A0058F79D /* datadef.c in Sources */ = {isa = PBXBuildFile; fileRef = EB4687BF1CE5B3A50076184D /* datadef.c */; settings = {COMPILER_FLAGS = "-O2"; }; };
+		EB858CAC1D39D2F700416A8B /* resultprint.c in Sources */ = {isa = PBXBuildFile; fileRef = EB858CAB1D39D2F700416A8B /* resultprint.c */; };
+		EB858CAD1D39D2F700416A8B /* resultprint.c in Sources */ = {isa = PBXBuildFile; fileRef = EB858CAB1D39D2F700416A8B /* resultprint.c */; };
 		EB90FBA71D35F9CF002737A7 /* datamanip.c in Sources */ = {isa = PBXBuildFile; fileRef = EBC9743C1CEC24550091D221 /* datamanip.c */; };
 		EB90FBA81D35F9D9002737A7 /* datadef.c in Sources */ = {isa = PBXBuildFile; fileRef = EB4687BF1CE5B3A50076184D /* datadef.c */; };
 		EB90FBA91D35F9DD002737A7 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = EB4687B61CE5B3320076184D /* file.c */; };
@@ -73,6 +75,7 @@
 		EB4687BF1CE5B3A50076184D /* datadef.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = datadef.c; sourceTree = "<group>"; };
 		EB4687C11CE5B3AB0076184D /* test-datadef.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "test-datadef.c"; sourceTree = "<group>"; };
 		EB5343541CE5B09D00DACE1B /* microdb */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = microdb; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB858CAB1D39D2F700416A8B /* resultprint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = resultprint.c; sourceTree = "<group>"; };
 		EBC974351CEC243E0091D221 /* test-datamanip */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "test-datamanip"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBC9743C1CEC24550091D221 /* datamanip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = datamanip.c; sourceTree = "<group>"; };
 		EBC9743E1CEC24640091D221 /* test-datamanip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "test-datamanip.c"; sourceTree = "<group>"; };
@@ -113,11 +116,12 @@
 		EB4687B81CE5B35E0076184D /* src */ = {
 			isa = PBXGroup;
 			children = (
+				EB858CAB1D39D2F700416A8B /* resultprint.c */,
+				EB4687BB1CE5B38C0076184D /* main.c */,
 				EBC9743C1CEC24550091D221 /* datamanip.c */,
-				EBC9743E1CEC24640091D221 /* test-datamanip.c */,
 				EB4687BF1CE5B3A50076184D /* datadef.c */,
 				EB4687B61CE5B3320076184D /* file.c */,
-				EB4687BB1CE5B38C0076184D /* main.c */,
+				EBC9743E1CEC24640091D221 /* test-datamanip.c */,
 				EB4687C11CE5B3AB0076184D /* test-datadef.c */,
 				EB4687BD1CE5B39B0076184D /* test-file.c */,
 			);
@@ -293,6 +297,7 @@
 				EB90FBAA1D35F9E0002737A7 /* microdb.h in Sources */,
 				EB90FBA91D35F9DD002737A7 /* file.c in Sources */,
 				EB90FBA81D35F9D9002737A7 /* datadef.c in Sources */,
+				EB858CAC1D39D2F700416A8B /* resultprint.c in Sources */,
 				EB90FBA71D35F9CF002737A7 /* datamanip.c in Sources */,
 				EB4687C41CE5B4620076184D /* main.c in Sources */,
 			);
@@ -306,6 +311,7 @@
 				EBC974401CEC69280091D221 /* file.c in Sources */,
 				EBC9743D1CEC24550091D221 /* datamanip.c in Sources */,
 				EBC9743F1CEC24640091D221 /* test-datamanip.c in Sources */,
+				EB858CAD1D39D2F700416A8B /* resultprint.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

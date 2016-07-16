@@ -49,11 +49,6 @@ struct File {
 #define MAX_STRING 64
 
 /*
- * COLUMN_WIDTH -- テーブル表示時のカラムの幅
- */
-#define COLUMN_WIDTH 12
-
-/*
  * dataType -- データベースに保存するデータの型
  */
 typedef enum DataType DataType;
@@ -179,22 +174,15 @@ extern void printTableInfo(char *);
  */
 extern Result initializeDataManipModule();
 extern Result finalizeDataManipModule();
-extern RecordSet *selectRecord(char *, Condition *);
-extern void freeRecordSet(RecordSet *);
-extern Result createDataFile(char *);
-extern Result deleteDataFile(char *);
-extern void printRecordSet(RecordSet *);
+extern Result insertRecord(char *, RecordData *);
 extern RecordSet *selectRecord(char *, Condition *);
 extern void freeRecordSet(RecordSet *);
 extern Result deleteRecord(char *, Condition *);
+extern Result createDataFile(char *);
 extern Result deleteDataFile(char *);
-extern void printRecodeSet(RecordSet *);
-extern Result insertRecord(char *, RecordData *);
-extern void copySlotToPage(char *, int, RecordSlot *);
-extern char* createRecordString(TableInfo *, RecordData *, int);
-extern RecordSlot* readSlotFromPage(char *, int );
-extern Result writeSlotToPage(char *, RecordSlot *);
-extern int changeNumSlot(char*, int);
-extern int decrementNumSlot(char*);
-extern Result initializePage(char*);
-extern void insertLine(int, int);
+
+/*
+ * resultprint.cに定義されている関数群
+ */
+extern void printTableData(char *);
+extern void printRecordSet(char *, RecordSet *);

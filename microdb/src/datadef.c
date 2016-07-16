@@ -18,8 +18,7 @@
  * 返り値;
  *	成功ならOK、失敗ならNGを返す
  */
-Result initializeDataDefModule()
-{
+Result initializeDataDefModule(){
     return OK;
 }
 
@@ -32,8 +31,7 @@ Result initializeDataDefModule()
  * 返り値;
  *	成功ならOK、失敗ならNGを返す
  */
-Result finalizeDataDefModule()
-{
+Result finalizeDataDefModule(){
     return OK;
 }
 
@@ -54,8 +52,7 @@ Result finalizeDataDefModule()
  *   +-------------------+----------------------+-------------------+----
  * 以降、フィールド名とデータ型が交互に続く。
  */
-Result createTable(char *tableName, TableInfo *tableInfo)
-{
+Result createTable(char *tableName, TableInfo *tableInfo){
     File *file;
     char filename[MAX_FILENAME];
     char page[PAGE_SIZE];
@@ -107,8 +104,7 @@ Result createTable(char *tableName, TableInfo *tableInfo)
  * 返り値:
  *	成功ならOK、失敗ならNGを返す
  */
-Result dropTable(char *tableName)
-{
+Result dropTable(char *tableName){
     char filename[MAX_FILENAME];
 
     //テーブル定義情報ファイルの削除
@@ -134,8 +130,7 @@ Result dropTable(char *tableName)
  *	この関数が返すデータ定義情報を収めたメモリ領域は、不要になったら
  *	必ずfreeTableInfoで解放すること。
  */
-TableInfo *getTableInfo(char *tableName)
-{
+TableInfo *getTableInfo(char *tableName){
     TableInfo *tableInfo;
     File *file;
     char filename[MAX_FILENAME];
@@ -187,8 +182,7 @@ TableInfo *getTableInfo(char *tableName)
  *	関数getTableInfoが返すデータ定義情報を収めたメモリ領域は、
  *	不要になったら必ずこの関数で解放すること。
  */
-void freeTableInfo(TableInfo *tableInfo)
-{
+void freeTableInfo(TableInfo *tableInfo){
     free(tableInfo);
 }
 
@@ -201,8 +195,7 @@ void freeTableInfo(TableInfo *tableInfo)
  * 返り値:
  *	なし
  */
-void printTableInfo(char *tableName)
-{
+void printTableInfo(char *tableName){
     TableInfo *tableInfo;
     int i;
 
