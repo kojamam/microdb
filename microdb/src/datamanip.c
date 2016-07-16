@@ -501,7 +501,7 @@ RecordSet *selectRecord(char *tableName, Condition *condition){
                 }/* レコードの読み込み終わり */
 
                 /*条件を満足するかを確認して満たしていたらRecordSetの末尾に追加*/
-                if(checkCondition(recordData, condition) == OK){
+                if(condition == NULL || checkCondition(recordData, condition) == OK){
                     recordSet->numRecord++;
                     if(recordSet->recordData == NULL){
                         recordSet->recordData = recordData;

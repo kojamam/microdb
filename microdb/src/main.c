@@ -469,116 +469,127 @@ void callSelectRecord()
         printf("指定したテーブルは存在しません。\n");
         return;
     }
-
-    /* それが"where"かどうかをチェック */
-    token = getNextToken();
-    if (token == NULL || strcmp(token, "where") != 0) {
-        /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
-        return;
-    }
     
-    /* 条件式のフィールド名を読み込む */
-    if ((token = getNextToken()) == NULL) {
-        /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
-        
+    /* 次のトークンを取得 */
+    token = getNextToken();
+    /* "select * from TABLENAME" のように条件句がない時 */
+    if(token == NULL){
+        /*selectRecoredの呼び出し*/
+        if ((recordSet = selectRecord(tableName, NULL)) == NULL) {
+            fprintf(stderr, "Cannot select records.\n");
+            return;
+        }
+    }else{
+        /*条件句があるとき*/
+        /* それが"where"かどうかをチェック */
+        if (strcmp(token, "where") != 0) {
+            /* 文法エラー */
+            printf("入力行に間違いがあります。\n");
+            return;
+        }
+
+        /* 条件式のフィールド名を読み込む */
+        if ((token = getNextToken()) == NULL) {
+            /* 文法エラー */
+            printf("入力行に間違いがあります。\n");
+            
+            /* 不要になったメモリ領域を解放する */
+            freeTableInfo(tableInfo);
+            
+            return;
+        }
+        strcpy(cond.name, token);
+
+        /* 条件式に指定されたフィールドのデータ型を調べる */
+        cond.dataType = TYPE_UNKNOWN;
+        for (i = 0; i < tableInfo->numField; i++) {
+            if (strcmp(tableInfo->fieldInfo[i].name, cond.name) == 0) {
+                /* フィールドのデータ型を構造体に設定してループを抜ける */
+                cond.dataType = tableInfo->fieldInfo[i].dataType;
+                break;
+            }
+        }
+
         /* 不要になったメモリ領域を解放する */
         freeTableInfo(tableInfo);
-        
-        return;
-    }
-    strcpy(cond.name, token);
-    
-    /* 条件式に指定されたフィールドのデータ型を調べる */
-    cond.dataType = TYPE_UNKNOWN;
-    for (i = 0; i < tableInfo->numField; i++) {
-        if (strcmp(tableInfo->fieldInfo[i].name, cond.name) == 0) {
-            /* フィールドのデータ型を構造体に設定してループを抜ける */
-            cond.dataType = tableInfo->fieldInfo[i].dataType;
-            break;
+
+        /* フィールドのデータ型がわからなければ、文法エラー */
+        if (cond.dataType == TYPE_UNKNOWN) {
+            printf("指定したフィールドが存在しません。\n");
+            return;
         }
-    }
-    
-    /* 不要になったメモリ領域を解放する */
-    freeTableInfo(tableInfo);
-    
-    /* フィールドのデータ型がわからなければ、文法エラー */
-    if (cond.dataType == TYPE_UNKNOWN) {
-        printf("指定したフィールドが存在しません。\n");
-        return;
-    }
-    
-    /* 条件式の比較演算子を読み込む */
-    if ((token = getNextToken()) == NULL) {
-        /* 文法エラー */
-        printf("条件式の指定に間違いがあります。\n");
-        return;
-    }
-    
-    /* 条件式の比較演算子を構造体に設定 */
-    if(strcmp(token, "=") == 0){
-        cond.operator = OPR_EQUAL;
-    }else if(strcmp(token, "!=") == 0){
-        cond.operator = OPR_NOT_EQUAL;
-    }else if(strcmp(token, ">") == 0){
-        cond.operator = OPR_GREATER_THAN;
-    }else if(strcmp(token, ">=") == 0){
-        cond.operator = OPR_OR_GREATER_THAN;
-    }else if(strcmp(token, "<") == 0){
-        cond.operator = OPR_LESS_THAN;
-    }else if(strcmp(token, ">") == 0){
-        cond.operator = OPR_OR_LESS_THAN;
-    }else{
-        /* 文法エラー */
-        printf("条件式の指定に間違いがあります。\n");
-        return;
-    }
-    
-    /* 条件式の値を読み込む */
-    if ((token = getNextToken()) == NULL) {
-        /* 文法エラー */
-        printf("条件式の指定に間違いがあります。\n");
-        return;
-    }
-    
-    /* 条件式の値を構造体に設定 */
-    if (cond.dataType == TYPE_INTEGER) {
-        /* トークンの文字列を整数値に変換して設定 */
-        cond.intValue = atoi(token);
-    } else if (cond.dataType == TYPE_STRING) {
-        char stringVal[MAX_STRING];
-        /* はじめが'であるかをチェック */
-        if(token == NULL || token[0] != '\''){
+
+        /* 条件式の比較演算子を読み込む */
+        if ((token = getNextToken()) == NULL) {
             /* 文法エラー */
             printf("条件式の指定に間違いがあります。\n");
             return;
         }
-        
-        /* 'の次からコピーしていく */
-        for(i = 0; token[i+1] != '\0'; i++){
-            stringVal[i] = token[i+1];
-        }
-        
-        /* 'でしめられていたらそれを\0にしてコピーする */
-        if(stringVal[i-1] == '\''){
-            stringVal[i-1] = '\0';
-            strcpy(cond.stringValue, stringVal);
+
+        /* 条件式の比較演算子を構造体に設定 */
+        if(strcmp(token, "=") == 0){
+            cond.operator = OPR_EQUAL;
+        }else if(strcmp(token, "!=") == 0){
+            cond.operator = OPR_NOT_EQUAL;
+        }else if(strcmp(token, ">") == 0){
+            cond.operator = OPR_GREATER_THAN;
+        }else if(strcmp(token, ">=") == 0){
+            cond.operator = OPR_OR_GREATER_THAN;
+        }else if(strcmp(token, "<") == 0){
+            cond.operator = OPR_LESS_THAN;
+        }else if(strcmp(token, ">") == 0){
+            cond.operator = OPR_OR_LESS_THAN;
         }else{
+            /* 文法エラー */
             printf("条件式の指定に間違いがあります。\n");
             return;
         }
-        
-    } else {
-        /* ここに来ることはないはず */
-        fprintf(stderr, "Unknown data type found.\n");
-        exit(1);
-    }
-    
-    /*selectRecoredの呼び出し*/
-    if ((recordSet = selectRecord(tableName, &cond)) == NULL) {
-        fprintf(stderr, "Cannot select records.\n");
-        return;
+
+        /* 条件式の値を読み込む */
+        if ((token = getNextToken()) == NULL) {
+            /* 文法エラー */
+            printf("条件式の指定に間違いがあります。\n");
+            return;
+        }
+
+        /* 条件式の値を構造体に設定 */
+        if (cond.dataType == TYPE_INTEGER) {
+            /* トークンの文字列を整数値に変換して設定 */
+            cond.intValue = atoi(token);
+        } else if (cond.dataType == TYPE_STRING) {
+            char stringVal[MAX_STRING];
+            /* はじめが'であるかをチェック */
+            if(token == NULL || token[0] != '\''){
+                /* 文法エラー */
+                printf("条件式の指定に間違いがあります。\n");
+                return;
+            }
+            
+            /* 'の次からコピーしていく */
+            for(i = 0; token[i+1] != '\0'; i++){
+                stringVal[i] = token[i+1];
+            }
+            
+            /* 'でしめられていたらそれを\0にしてコピーする */
+            if(stringVal[i-1] == '\''){
+                stringVal[i-1] = '\0';
+                strcpy(cond.stringValue, stringVal);
+            }else{
+                printf("条件式の指定に間違いがあります。\n");
+                return;
+            }
+            
+        } else {
+            /* ここに来ることはないはず */
+            fprintf(stderr, "Unknown data type found.\n");
+            exit(1);
+        }
+
+        /*selectRecoredの呼び出し*/
+        if ((recordSet = selectRecord(tableName, &cond)) == NULL) {
+            fprintf(stderr, "Cannot select records.\n");
+            return;
+        }
     }
     
     /* 結果を表示 */
@@ -601,8 +612,7 @@ void callSelectRecord()
  * deleteの書式:
  *	delete from テーブル名 where 条件式
  */
-void callDeleteRecord()
-{
+void callDeleteRecord(){
     char *token;
     char *tableName;
     TableInfo *tableInfo;
@@ -630,9 +640,17 @@ void callDeleteRecord()
         printf("指定したテーブルは存在しません。\n");
         return;
     }
-    /* それが"where"かどうかをチェック */
+    
+    /*次のトークンの読み込み*/
     token = getNextToken();
-    if (token == NULL || strcmp(token, "where") != 0) {
+    /* "delete from TABLENAME" のように条件句がない時 */
+    if(token == NULL){
+        deleteRecord(tableName, NULL);
+        return;
+    }
+    
+    /* "where"かどうかをチェック */
+    if (strcmp(token, "where") != 0) {
         /* 文法エラー */
         printf("入力行に間違いがあります。\n");
         return;
