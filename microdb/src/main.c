@@ -5,7 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "microdb.h"
+#include <readline/readline.h>
+#include <readline/history.h>
+#include "../include/microdb.h"
 
 /*
  * MAX_INPUT -- 入力行の最大文字数
@@ -580,7 +582,7 @@ void callSelectRecord()
     }
     
     /* 結果を表示 */
-    printRecordSet(recordSet);
+    printRecordSet(tableName, recordSet);
     
     /* 結果を解放 */
     freeRecordSet(recordSet);
@@ -743,6 +745,7 @@ int main()
 {
     char input[MAX_INPUT];
     char *token;
+    char *line;
     
     /* ファイルモジュールの初期化 */
     if (initializeFileModule() != OK) {
@@ -767,20 +770,26 @@ int main()
     
     /* 1行ずつ入力を読み込みながら、処理を行う */
     for(;;) {
-        /* プロンプトの出力 */
+        /* プロンプトを出力して、キーボード入力を1行読み込む */
         printf("\nDDLまたはDMLを入力してください。\n");
-        printf("> ");
+        line = readline("> ");
         
-        /* キーボード入力を1行読み込む */
-        fgets(input, MAX_INPUT, stdin);
-        
-        /* 入力の最後の改行を取り除く */
-        if (strchr(input, '\n') != NULL) {
-            *(strchr(input, '\n')) = '\0';
+        /* EOFになったら終了 */
+        if (line == NULL) {
+            printf("マイクロDBMSを終了します。\n\n");
+            break;
         }
         
         /* 字句解析するために入力文字列を設定する */
+        strncpy(input, line, MAX_INPUT);
         setInputString(input);
+        
+        /* 入力の履歴を保存する */
+        if (line && *line) {
+            add_history(line);
+        }
+        
+        free(line);
         
         /* 最初のトークンを取り出す */
         token = getNextToken();
