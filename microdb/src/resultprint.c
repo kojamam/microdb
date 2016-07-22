@@ -36,31 +36,57 @@ static void insertLine(int n, int m){
  * 引数:
  *	tableInfo: テーブル情報
  */
-static void printTableHeader(TableInfo *tableInfo){
-    int i;
+static void printTableHeader(TableInfo *tableInfo, FieldList *fieldList){
+    int i, j;
+    int isIncluded = 0;
     
     /*表ヘッダの出力*/
-    insertLine(tableInfo->numField, COLUMN_WIDTH);
+    if(fieldList == NULL){
+        insertLine(tableInfo->numField, COLUMN_WIDTH);
+    }else{
+        insertLine(fieldList->numField, COLUMN_WIDTH);
+    }
     printf("|");
+
     for (i = 0; i < tableInfo->numField; i++) {
-        switch (tableInfo->fieldInfo[i].dataType) {
-            case TYPE_INTEGER:
-                printf("%10s |", tableInfo->fieldInfo[i].name);
-                break;
-            case TYPE_STRING:
-                printf("%10s |", tableInfo->fieldInfo[i].name);
-                break;
-            default:
-                /* ここにくることはないはず */
-                freeTableInfo(tableInfo);
-                return;
-                break;
+        
+        if(fieldList != NULL){
+            for(j=0; j < fieldList->numField; j++){
+                if(strcmp(fieldList->name[j], tableInfo->fieldInfo[i].name) == 0){
+                    isIncluded = 1;
+                    break;
+                }else{
+                    isIncluded = 0;
+                }
+            }
+        }else{
+            isIncluded = 1;
+        }
+
+        if (isIncluded == 1) {
+            switch (tableInfo->fieldInfo[i].dataType) {
+                case TYPE_INTEGER:
+                    printf("%10s |", tableInfo->fieldInfo[i].name);
+                    break;
+                case TYPE_STRING:
+                    printf("%10s |", tableInfo->fieldInfo[i].name);
+                    break;
+                default:
+                    /* ここにくることはないはず */
+                    freeTableInfo(tableInfo);
+                    return;
+                    break;
+            }
         }
         
     }
     printf("\n");
     /*罫線の挿入*/
-    insertLine(tableInfo->numField, COLUMN_WIDTH);
+    if(fieldList == NULL){
+        insertLine(tableInfo->numField, COLUMN_WIDTH);
+    }else{
+        insertLine(fieldList->numField, COLUMN_WIDTH);
+    }
 }
 
 /*
@@ -94,7 +120,7 @@ void printTableData(char *tableName){
     }
     
     /*表ヘッダの出力*/
-    printTableHeader(tableInfo);
+    printTableHeader(tableInfo, NULL);
     
     /* ページ数分だけ繰り返す */
     for (i=0; i<numPage; ++i) {
@@ -172,7 +198,7 @@ void printTableData(char *tableName){
  * 引数:
  *	recordSet: 表示するレコード集合
  */
-void printRecordSet(char *tableName, RecordSet *recordSet){
+void printRecordSet(char *tableName, RecordSet *recordSet, FieldList *fieldList){
     RecordData *record;
     TableInfo *tableInfo;
     int i,j;
@@ -183,13 +209,13 @@ void printRecordSet(char *tableName, RecordSet *recordSet){
     }
     
     /*表ヘッダの出力*/
-    printTableHeader(tableInfo);
+    printTableHeader(tableInfo, fieldList);
     
     record = recordSet->recordData;
     for (i=0; i<recordSet->numRecord; ++i) {
         printf("|");
         
-        for (j = 0; j < tableInfo->numField; j++) {
+        for (j = 0; j < record->numField; j++) {
             switch (tableInfo->fieldInfo[j].dataType) {
                 case TYPE_INTEGER:
                     /* 整数の時、表示 */
@@ -216,8 +242,11 @@ void printRecordSet(char *tableName, RecordSet *recordSet){
     
     /*罫線の挿入*/
     if(recordSet->numRecord > 0){
-        insertLine(tableInfo->numField, COLUMN_WIDTH);
-    }
+        if(fieldList == NULL){
+            insertLine(tableInfo->numField, COLUMN_WIDTH);
+        }else{
+            insertLine(fieldList->numField, COLUMN_WIDTH);
+        }    }
     
     /* レコード数の表示 */
     printf("%d rows in set\n", recordSet->numRecord);

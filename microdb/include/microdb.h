@@ -142,6 +142,15 @@ struct Condition {
     char stringValue[MAX_STRING];	/* string型の場合の値 */
 };
 
+/*
+ * FieldList -- select句に指定されたフィールドのリストを表現する構造体
+ */
+typedef struct FieldList FieldList;
+struct FieldList {
+    int numField;                               /* select句に指定されたフィールドの数 */
+    char name[MAX_FIELD][MAX_FIELD_NAME];       /* select句に指定されたフィールド名 */
+};
+
 
 
 /*
@@ -175,7 +184,7 @@ extern void printTableInfo(char *);
 extern Result initializeDataManipModule();
 extern Result finalizeDataManipModule();
 extern Result insertRecord(char *, RecordData *);
-extern RecordSet *selectRecord(char *, Condition *);
+extern RecordSet *selectRecord(char *, FieldList *, Condition *);
 extern void freeRecordSet(RecordSet *);
 extern Result deleteRecord(char *, Condition *);
 extern Result createDataFile(char *);
@@ -185,4 +194,4 @@ extern Result deleteDataFile(char *);
  * resultprint.cに定義されている関数群
  */
 extern void printTableData(char *);
-extern void printRecordSet(char *, RecordSet *);
+extern void printRecordSet(char *, RecordSet *, FieldList *);

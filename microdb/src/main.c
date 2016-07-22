@@ -320,7 +320,7 @@ void callInsertRecord()
     RecordData recordData;
     int i, j;
     
-    /* selectの次のトークンを読み込み、それが"into"かどうかをチェック */
+    /* insertの次のトークンを読み込み、それが"into"かどうかをチェック */
     token = getNextToken();
     if (token == NULL || strcmp(token, "into") != 0) {
         /* 文法エラー */
@@ -397,7 +397,7 @@ void callInsertRecord()
             exit(1);
         }
         
-        /* 次のトークンを読み込み、それが","かなら次のフィールドを読み込み */
+        /* 次のトークンを読み込み、それが","なら次のフィールドを読み込み */
         token = getNextToken();
         if (strcmp(token, ",") == 0) {
             continue;
@@ -437,25 +437,60 @@ void callSelectRecord()
     TableInfo *tableInfo;
     Condition cond;
     RecordSet *recordSet;
-    int i;
+    int i, numField;
     
     
     /* selectの次のトークンを読み込み、それが"*"かどうかをチェック */
     token = getNextToken();
-    if (token == NULL || strcmp(token, "*") != 0) {
+    if (token == NULL) {
         /* 文法エラー */
         printf("入力行に間違いがあります。\n");
         return;
     }
     
-    /* 次のトークンを読み込み、それが"from"かどうかをチェック */
-    token = getNextToken();
-    if (token == NULL || strcmp(token, "from") != 0) {
-        /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
-        return;
+    if(strcmp(token, "*") != 0){
+        numField = 0;
+        for(;;) {
+            
+            /* フィールド名を配列に設定 */
+            strcpy(fieleInfo.name[numField], token);
+            
+            /* フィールド数をカウントする */
+            numField++;
+            
+            /* フィールド数が上限を超えていたらエラー */
+            if (numField > tableInfo->numField) {
+                printf("フィールド数が多すぎます。\n");
+                return;
+            }
+            
+            /* 次のトークンの読み込み */
+            token = getNextToken();
+            
+            /* 読み込んだトークンが")"だったら、ループから抜ける */
+            if (strcmp(token, "from") == 0) {
+                break;
+            } else if (strcmp(token, ",") == 0) {
+                /* 次のフィールドを読み込むため、ループの先頭へ */
+                token = getNextToken();
+                continue;
+            } else {
+                /* 文法エラー */
+                printf("入力行に間違いがあります。\n");
+                return;
+            }
+        }
+
+    }else{
+        /* 次のトークンを読み込み、それが"from"かどうかをチェック */
+        token = getNextToken();
+        if (token == NULL || strcmp(token, "from") != 0) {
+            /* 文法エラー */
+            printf("入力行に間違いがあります。\n");
+            return;
+        }
     }
-    
+
     /* テーブル名を読み込む */
     if ((tableName = getNextToken()) == NULL) {
         /* 文法エラー */
@@ -475,7 +510,7 @@ void callSelectRecord()
     /* "select * from TABLENAME" のように条件句がない時 */
     if(token == NULL){
         /*selectRecoredの呼び出し*/
-        if ((recordSet = selectRecord(tableName, NULL)) == NULL) {
+        if ((recordSet = selectRecord(tableName, NULL,  NULL)) == NULL) {
             fprintf(stderr, "Cannot select records.\n");
             return;
         }
@@ -586,7 +621,7 @@ void callSelectRecord()
         }
 
         /*selectRecoredの呼び出し*/
-        if ((recordSet = selectRecord(tableName, &cond)) == NULL) {
+        if ((recordSet = selectRecord(tableName, NULL, &cond)) == NULL) {
             fprintf(stderr, "Cannot select records.\n");
             return;
         }

@@ -155,6 +155,7 @@ Result test2()
 {
     RecordSet *recordSet;
     Condition condition;
+    FieldList fieldList;
 
     /*
      * 以下の検索を実行
@@ -165,14 +166,14 @@ Result test2()
     condition.operator = OPR_GREATER_THAN;
     condition.intValue = 17;
 
-    if ((recordSet = selectRecord(TABLE_NAME, &condition)) == NULL) {
+    if ((recordSet = selectRecord(TABLE_NAME, NULL, &condition)) == NULL) {
         fprintf(stderr, "Cannot select records.\n");
         return NG;
     }
 
     /* 結果を表示 */
-    printf("age > 17\n");
-     printRecordSet(TABLE_NAME, recordSet);
+    printf("select * from TABLE_NAME where age > 17\n");
+     printRecordSet(TABLE_NAME, recordSet, NULL);
 
     /* 結果を解放 */
     freeRecordSet(recordSet);
@@ -186,15 +187,53 @@ Result test2()
     condition.operator = OPR_NOT_EQUAL;
     strcpy(condition.stringValue, "Florida");
 
-    if ((recordSet = selectRecord(TABLE_NAME, &condition)) == NULL) {
+    if ((recordSet = selectRecord(TABLE_NAME, NULL, &condition)) == NULL) {
         fprintf(stderr, "Cannot select records.\n");
         return NG;
     }
 
     /* 結果を表示 */
-    printf("address != 'Florida'\n");
-    printRecordSet(TABLE_NAME, recordSet);
+    printf("select * from TABLE_NAME where address != 'Florida'\n");
+    printRecordSet(TABLE_NAME, recordSet, NULL);
 
+    /* 結果を解放 */
+    freeRecordSet(recordSet);
+    
+    /*
+     * 以下の検索を実行
+     * select name from TABLE_NAME'
+     */
+    strcpy(fieldList.name[0], "name");
+    fieldList.numField = 1;
+    
+    if ((recordSet = selectRecord(TABLE_NAME, &fieldList, NULL)) == NULL) {
+        fprintf(stderr, "Cannot select records.\n");
+        return NG;
+    }
+    
+    /* 結果を表示 */
+    printf("select name from TABLE_NAME\n");
+    printRecordSet(TABLE_NAME, recordSet, &fieldList);
+    
+    /*
+     * 以下の検索を実行
+     * select name from TABLE_NAME where address != 'Florida'
+     */
+    
+    strcpy(fieldList.name[1], "address");
+    fieldList.numField = 2;
+    
+    if ((recordSet = selectRecord(TABLE_NAME, &fieldList, &condition)) == NULL) {
+        fprintf(stderr, "Cannot select records.\n");
+        return NG;
+    }
+    
+    /* 結果を表示 */
+    printf("select name, address from TABLE_NAME where address != 'Florida'\n");
+    printRecordSet(TABLE_NAME, recordSet, &fieldList);
+    
+    
+    
     /* 結果を解放 */
     freeRecordSet(recordSet);
 

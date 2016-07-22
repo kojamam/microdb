@@ -88,19 +88,19 @@ static char* createRecordString(TableInfo *tableInfo, RecordData *recordData, in
     char *recordString;
     char *p;
     int i;
-    
+
     /* レコードを治めるために必要なバイト数を計算 */
     recordSize = getRecordSize(recordData, tableInfo);
-    
+
     /* レコード文字列のメモリの確保 */
     if((recordString = (char *)malloc(sizeof(char) * recordSize)) == NULL){
         return NULL; //エラー処理
     }
-    
-    
+
+
     /* recordの先頭アドレスををpに代入 */
     p = recordString;
-    
+
     /* 確保したメモリ領域に、フィールド数分だけ、順次データを埋め込む */
     for (i = 0; i < tableInfo->numField; i++) {
         int stringLen;
@@ -125,7 +125,7 @@ static char* createRecordString(TableInfo *tableInfo, RecordData *recordData, in
                 return NULL;
         }
     }
-    
+
     return recordString;
 }
 
@@ -142,22 +142,22 @@ static char* createRecordString(TableInfo *tableInfo, RecordData *recordData, in
 static RecordSlot* readSlotFromPage(char *page, int n){
     RecordSlot *slot;
     char *p;
-    
+
     if((slot = (RecordSlot*)malloc(sizeof(RecordSlot))) == NULL){
         return NULL;
     }
-    
+
     slot->num = n;
-    
+
     /* スロットがある位置までポインタをすすめる */
     p = page;
     p += sizeof(int) + (sizeof(char) + sizeof(int) + sizeof(int)) * n;
-    
+
     /* スロットを構造体にコピー */
     memcpy(&slot->flag, p, sizeof(char));
     memcpy(&slot->offset, p+sizeof(char), sizeof(int));
     memcpy(&slot->size, p+sizeof(char)+sizeof(int), sizeof(int));
-    
+
     return slot;
 }
 
@@ -173,16 +173,16 @@ static RecordSlot* readSlotFromPage(char *page, int n){
  */
 static Result writeSlotToPage(char *page, RecordSlot *slot){
     char *p;
-    
+
     p = page;
     p += sizeof(int) + (sizeof(char) + sizeof(int) + sizeof(int)) * slot->num;
-    
+
     memcpy(p, &slot->flag, sizeof(char));
     memcpy(p+sizeof(char), &slot->offset, sizeof(int));
     memcpy(p+sizeof(char)+sizeof(int), &slot->size, sizeof(int));
-    
+
     free(slot);
-    
+
     return OK;
 }
 
@@ -199,13 +199,13 @@ static Result writeSlotToPage(char *page, RecordSlot *slot){
  */
 static int changeNumSlot(char *page, int delta){
     int num;
-    
+
     memcpy(&num, page, sizeof(int));
     num += delta;
     memcpy(page, &num, sizeof(int));
-    
+
     return num;
-    
+
 }
 
 /*
@@ -220,16 +220,16 @@ static int changeNumSlot(char *page, int delta){
 static Result initializePage(char *page){
     int numSlot = 1;
     RecordSlot *slot;
-    
+
     /* メモリの確保 */
     slot = (RecordSlot*)malloc(sizeof(RecordSlot));
-    
+
     /* 0埋め */
     memset(page, 0, PAGE_SIZE);
-    
+
     /* 先頭にスロット数を書き込み */
     memcpy(page, &numSlot, sizeof(int));
-    
+
     /* 一個目のスロットの構造体を用意 */
     slot->num = 0;
     slot->flag = 0;
@@ -237,7 +237,7 @@ static Result initializePage(char *page){
     slot->size = PAGE_SIZE - slot->offset;
     /* スロットの書き込み */
     if(writeSlotToPage(page, slot) == NG){ return NG; }
-    
+
     return OK;
 }
 
@@ -316,7 +316,7 @@ Result insertRecord(char *tableName, RecordData *recordData){
                 recordSlot->flag = 1;
                 recordSlot->offset = recordSlot->offset + recordSlot->size -  recordSize;
                 recordSlot->size = recordSize;
-                
+
 
                 writeSlotToPage(page, recordSlot);
 
@@ -325,8 +325,8 @@ Result insertRecord(char *tableName, RecordData *recordData){
                     writeSlotToPage(page, newRecordSlot);
                     changeNumSlot(page, 1);
                 }
-                
-                
+
+
 
                 writePage(file, i, page);
 
@@ -357,9 +357,9 @@ Result insertRecord(char *tableName, RecordData *recordData){
 
     writeSlotToPage(page, recordSlot);
     writeSlotToPage(page, newRecordSlot);
-    
+
     changeNumSlot(page, 1);
-    
+
 
     writePage(file, numPage, page);
 
@@ -382,7 +382,7 @@ static Result checkCondition(RecordData *recordData, Condition *condition){
     int i;
     OperatorType opType = condition->operator;
     int diff;
-    
+
     for(i=0; i<recordData->numField; ++i){
         if(strcmp(recordData->fieldData[i].name, condition->name) == 0){
             if(recordData->fieldData[i].dataType == TYPE_INTEGER){
@@ -393,7 +393,7 @@ static Result checkCondition(RecordData *recordData, Condition *condition){
                 /*ここに来ることはないはず*/
                 diff = 0;
             }
-            
+
             if((opType == OPR_EQUAL && diff == 0)
                || (opType == OPR_NOT_EQUAL && diff != 0)
                || (opType == OPR_GREATER_THAN && diff > 0)
@@ -426,17 +426,18 @@ static Result checkCondition(RecordData *recordData, Condition *condition){
 *	この関数が返すレコードの集合を収めたメモリ領域は、不要になったら
 *	必ずfreeRecordSetで解放すること。
 */
-RecordSet *selectRecord(char *tableName, Condition *condition){
+RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condition){
     RecordSet *recordSet;
     char filename[MAX_FILENAME];
     File *file;
     int numPage;
     TableInfo *tableInfo;
-    int i, j, k;
+    int i, j, k, l, m, n;
     char page[PAGE_SIZE];
     int numRecordSlot;
     char *p, *q;
     RecordSlot recordSlot;
+    int isIncluded = 0;
 
     recordSet = (RecordSet*)malloc(sizeof(RecordSet));
     recordSet->numRecord = 0;
@@ -471,58 +472,114 @@ RecordSet *selectRecord(char *tableName, Condition *condition){
 
             /* レコードがあったら読み込み */
             if(recordSlot.flag == 1){
-                RecordData *recordData = (RecordData*)malloc(sizeof(RecordData));
-                recordData->numField = tableInfo->numField;
-                recordData->next = NULL;
+                RecordData *recordData1 = (RecordData*)malloc(sizeof(RecordData));
+                recordData1->numField = 1;
+                recordData1->next = NULL;
+
+                RecordData *recordData2 = (RecordData*)malloc(sizeof(RecordData));
+                recordData2->next = NULL;
                 int stringLen;
 
+                /* k tableInfo->fieldData[k]
+                 * l recordData1->fieldData[l]
+                 * m recordData2->fieldData[m]
+                 * n fieldList->name[n]
+                */
+                l = m = 0;
+                /* フィールド繰り返し */
                 for (k = 0; k < tableInfo->numField; k++) {
-                    strcpy(recordData->fieldData[k].name, tableInfo->fieldInfo[k].name);
-                    recordData->fieldData[k].dataType = tableInfo->fieldInfo[k].dataType;
+                    /*コンディションがあって、対象のフィールドであるときrecordData1に格納 */
+                    if(condition != NULL && strcmp(condition->name, tableInfo->fieldInfo[k].name) == 0){
+                        strcpy(recordData1->fieldData[l].name, tableInfo->fieldInfo[k].name);
+                        recordData1->fieldData[l].dataType = tableInfo->fieldInfo[k].dataType;
+                        switch (tableInfo->fieldInfo[k].dataType) {
+                            case TYPE_INTEGER:
+                                /* 整数の時、そのままコピー */
+                                memcpy(&recordData1->fieldData[l].intValue, q, sizeof(int));
+                                break;
+                            case TYPE_STRING:
+                                /* 文字列の時、文字列長を飛ばして文字列を格納 */
+                                strcpy(recordData1->fieldData[l].stringValue, q+sizeof(int));
+                                break;
+                            default:
+                                /* ここにくることはないはず */
+                                freeTableInfo(tableInfo);
+                                free(recordData1);
+                                return NULL;
+                        }
+                        l++;
+                    }
+
+                    /* fieldListがあって、そのフィールドが存在するかを確認してisIncludedフラグを立てる */
+                    if(fieldList != NULL){
+                        for(n=0; n < fieldList->numField; n++){
+                            if(strcmp(fieldList->name[n], tableInfo->fieldInfo[k].name) == 0){
+                                isIncluded = 1;
+                                break;
+                            }else{
+                                isIncluded = 0;
+                            }
+                        }
+                    }else{
+                        isIncluded = 1;
+                    }
+
+                    /* fieldListにデータが含まれていたらrecordData2に格納 */
+                    if(isIncluded){
+                        strcpy(recordData2->fieldData[m].name, tableInfo->fieldInfo[k].name);
+                        recordData2->fieldData[m].dataType = tableInfo->fieldInfo[k].dataType;
+                    }
                     switch (tableInfo->fieldInfo[k].dataType) {
                         case TYPE_INTEGER:
                             /* 整数の時、そのままコピーしてポインタを進める */
-                            memcpy(&recordData->fieldData[k].intValue, q, sizeof(int));
+                            if(isIncluded){
+                                memcpy(&recordData2->fieldData[m++].intValue, q, sizeof(int));
+                            }
                             q += sizeof(int);
                             break;
                         case TYPE_STRING:
                             /* 文字列の時、文字列の長さを先頭に格納してから文字列を格納 */
                             memcpy(&stringLen, q, sizeof(int));
                             q += sizeof(int);
-                            strcpy(recordData->fieldData[k].stringValue, q);
+                            if(isIncluded){
+                                strcpy(recordData2->fieldData[m++].stringValue, q);
+                            }
                             q += stringLen+1; // '\0'の分も進む
                             break;
                         default:
                             /* ここにくることはないはず */
                             freeTableInfo(tableInfo);
-                            free(recordData);
+                            free(recordData2);
                             return NULL;
                     }
                 }/* レコードの読み込み終わり */
+                
+                recordData2->numField = m;
 
                 /*条件を満足するかを確認して満たしていたらRecordSetの末尾に追加*/
-                if(condition == NULL || checkCondition(recordData, condition) == OK){
+                if(condition == NULL || checkCondition(recordData1, condition) == OK){
                     recordSet->numRecord++;
                     if(recordSet->recordData == NULL){
-                        recordSet->recordData = recordData;
+                        recordSet->recordData = recordData2;
                     }else{
                         RecordData *tmpRecordData = recordSet->recordData;
                         while (tmpRecordData->next != NULL) {
                             tmpRecordData = tmpRecordData->next;
                         }
-                        tmpRecordData->next = recordData;
+                        tmpRecordData->next = recordData2;
                     }
                 }else{
-                    free(recordData);
+                    free(recordData2);
                 }
-            }
+                free(recordData1);
+            }/* レコード読み込みおわり */
 
             /* 次のスロットを見る */
             p += sizeof(char) + sizeof(int) * 2;
         }/* スロット繰り返し */
 
     }/*ページ繰り返し*/
-    
+
     return recordSet;
 }
 
@@ -544,7 +601,7 @@ void freeRecordSet(RecordSet *recordSet){
 
     recordData = recordSet->recordData;
     free(recordSet);
-    
+
     if(recordData == NULL){
         return;
     }
@@ -605,15 +662,15 @@ Result deleteRecord(char *tableName, Condition *condition){
             memcpy(&recordSlot.flag, p, sizeof(char));
             memcpy(&recordSlot.offset, p+sizeof(char), sizeof(int));
             memcpy(&recordSlot.size,p+sizeof(char)+sizeof(int), sizeof(int));
-            
+
             q = page + recordSlot.offset;
-            
+
             /* レコードがあったら読み込み */
             if(recordSlot.flag == 1){
                 RecordData *recordData = (RecordData*)malloc(sizeof(RecordData));
                 recordData->numField = tableInfo->numField;
                 int stringLen;
-                
+
                 for (k = 0; k < tableInfo->numField; k++) {
                     strcpy(recordData->fieldData[k].name, tableInfo->fieldInfo[k].name);
                     recordData->fieldData[k].dataType = tableInfo->fieldInfo[k].dataType;
@@ -654,7 +711,7 @@ Result deleteRecord(char *tableName, Condition *condition){
             /* 次のスロットを見る */
             p += sizeof(char) + sizeof(int) * 2;
         }/* スロット繰り返し */
-        
+
         writePage(file, i, page);
 
     }/*ページ繰り返し*/
