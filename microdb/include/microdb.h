@@ -165,6 +165,7 @@ extern Result closeFile(File *);
 extern Result readPage(File *, int, char *);
 extern Result writePage(File *, int, char *);
 extern int getNumPages(char *);
+extern void printBufferList();
 
 /*
  * datadef.cに定義されている関数群
