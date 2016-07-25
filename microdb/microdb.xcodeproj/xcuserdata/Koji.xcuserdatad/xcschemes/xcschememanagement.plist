@@ -9,6 +9,11 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>test-buffer.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
 		<key>test-datadef.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -38,6 +43,11 @@
 			<true/>
 		</dict>
 		<key>EB5343531CE5B09D00DACE1B</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>EBB4B4F21D4214B800FD60D2</key>
 		<dict>
 			<key>primary</key>
 			<true/>

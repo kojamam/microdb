@@ -309,7 +309,7 @@ Result readPage(File *file, int pageNum, char *page){
         /* 要求されたページがリストの中にあるかどうかチェックする */
         if (buf->file == file && buf->pageNum == pageNum) {
             /* 要求されたページがバッファにあったので、その内容を引数のpageにコピーする */
-            page = buf->page;
+            memcpy(page, buf->page, PAGE_SIZE);
             
             /* アクセスされたバッファを、リストの先頭に移動させる */
             moveBufferToListHead(buf);
