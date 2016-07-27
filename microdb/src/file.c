@@ -372,6 +372,7 @@ Result readPage(File *file, int pageNum, char *page){
     /* アクセスされたバッファ(emptyBuf)を、リストの先頭に移動させる */
     moveBufferToListHead(emptyBuf);
     
+    
     return OK;
 }
 
@@ -452,8 +453,7 @@ Result writePage(File *file, int pageNum, char *page){
     emptyBuf->pageNum = pageNum;
     
     /* アクセスされたバッファ(emptyBuf)を、リストの先頭に移動させる */
-    moveBufferToListHead(emptyBuf);
-    
+    moveBufferToListHead(emptyBuf);    
     return OK;
 
 }
@@ -501,7 +501,8 @@ void printBufferList()
         if (buf->file == NULL) {
             printf("(empty) ");
         } else {
-            printf("    %c%c%c ", buf->page[0], buf->page[1], buf->page[2]);
+//            printf("    %c%c%c ", buf->page[0], buf->page[1], buf->page[2]);
+            printf(" %s(%d) ", buf->file->name, buf->pageNum);
         }
     }
     

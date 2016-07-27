@@ -326,10 +326,9 @@ Result insertRecord(char *tableName, RecordData *recordData){
                     changeNumSlot(page, 1);
                 }
 
-
-
                 writePage(file, i, page);
-
+                
+                closeFile(file);
                 return OK;
 
             }
@@ -362,8 +361,8 @@ Result insertRecord(char *tableName, RecordData *recordData){
 
 
     writePage(file, numPage, page);
-
-    /* TODO エラー処理 */
+    closeFile(file);
+    
     return OK;
 }
 
@@ -653,6 +652,7 @@ RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condit
 
     }/*ページ繰り返し*/
 
+    closeFile(file);
     return recordSet;
 }
 
@@ -786,6 +786,8 @@ Result deleteRecord(char *tableName, Condition *condition){
         writePage(file, i, page);
 
     }/*ページ繰り返し*/
+    
+    closeFile(file);
 
     return OK;
 }
