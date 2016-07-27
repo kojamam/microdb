@@ -448,6 +448,13 @@ void callSelectRecord()
         return;
     }
     
+    if(strcmp(token, "distinct")==0){
+        cond.distinct = DISTINCT;
+        token = getNextToken();
+    }else{
+        cond.distinct = NOT_DISTINCT;
+    }
+    
     if(strcmp(token, "*") != 0){
         numField = 0;
         for(;;) {
@@ -787,6 +794,9 @@ void callDeleteRecord(){
          fprintf(stderr, "Unknown data type found.\n");
          exit(1);
      }
+    
+    /*distinct関係ないので*/
+    cond.distinct = NOT_DISTINCT;
     
     deleteRecord(tableName, &cond);
 }

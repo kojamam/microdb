@@ -127,8 +127,15 @@ enum OperatorType {
     OPR_GREATER_THAN,			/* > */
     OPR_OR_GREATER_THAN,      /* >= */
     OPR_LESS_THAN,			/* < */
-    OPR_OR_LESS_THAN        /* <= */
+    OPR_OR_LESS_THAN,        /* <= */
+    OPR_UNKNOWN             /*不明*/
 };
+
+/*
+ * distinctFlag -- 重複除去フラグ
+ */
+typedef enum { NOT_DISTINCT = 0, DISTINCT = 1 } distinctFlag;
+
 
 /*
  * Condition -- 検索や削除の条件式を表現する構造体
@@ -140,6 +147,7 @@ struct Condition {
     OperatorType operator;		/* 比較演算子 */
     int intValue;			/* integer型の場合の値 */
     char stringValue[MAX_STRING];	/* string型の場合の値 */
+    distinctFlag distinct;		/* 重複除去フラグ */
 };
 
 /*

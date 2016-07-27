@@ -13,138 +13,202 @@ Result test1()
 {
     RecordData record;
     int i;
-
+    
     /*
      * 以下のレコードを挿入
-     * ('i00001', 'Mickey', 20, 'Urayasu')
+     * ('i04001', 'Mickey', 20, 'Urayasu')
      */
     i = 0;
     strcpy(record.fieldData[i].name, "id");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "i00001");
+    strcpy(record.fieldData[i].stringValue, "i04001");
     i++;
-
+    
     strcpy(record.fieldData[i].name, "name");
     record.fieldData[i].dataType = TYPE_STRING;
     strcpy(record.fieldData[i].stringValue, "Mickey");
     i++;
-
+    
     strcpy(record.fieldData[i].name, "age");
     record.fieldData[i].dataType = TYPE_INTEGER;
     record.fieldData[i].intValue = 20;
     i++;
-
+    
     strcpy(record.fieldData[i].name, "address");
     record.fieldData[i].dataType = TYPE_STRING;
     strcpy(record.fieldData[i].stringValue, "Urayasu");
     i++;
-
+    
     record.numField = i;
-
+    
     if (insertRecord(TABLE_NAME, &record) != OK) {
         fprintf(stderr, "Cannot insert record.\n");
         return NG;
     }
-
+    
     /*
      * 以下のレコードを挿入
-     * ('i00002', 'Minnie', 19, 'Urayasu')
+     * ('i04001', 'Mickey', 20, 'Urayasu')
      */
     i = 0;
     strcpy(record.fieldData[i].name, "id");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "i00002");
+    strcpy(record.fieldData[i].stringValue, "i04001");
     i++;
-
+    
+    strcpy(record.fieldData[i].name, "name");
+    record.fieldData[i].dataType = TYPE_STRING;
+    strcpy(record.fieldData[i].stringValue, "Mickey");
+    i++;
+    
+    strcpy(record.fieldData[i].name, "age");
+    record.fieldData[i].dataType = TYPE_INTEGER;
+    record.fieldData[i].intValue = 20;
+    i++;
+    
+    strcpy(record.fieldData[i].name, "address");
+    record.fieldData[i].dataType = TYPE_STRING;
+    strcpy(record.fieldData[i].stringValue, "Urayasu");
+    i++;
+    
+    record.numField = i;
+    
+    if (insertRecord(TABLE_NAME, &record) != OK) {
+        fprintf(stderr, "Cannot insert record.\n");
+        return NG;
+    }
+    
+    /*
+     * 以下のレコードを挿入
+     * ('i04002', 'Minnie', 19, 'Urayasu')
+     */
+    i = 0;
+    strcpy(record.fieldData[i].name, "id");
+    record.fieldData[i].dataType = TYPE_STRING;
+    strcpy(record.fieldData[i].stringValue, "i04002");
+    i++;
+    
     strcpy(record.fieldData[i].name, "name");
     record.fieldData[i].dataType = TYPE_STRING;
     strcpy(record.fieldData[i].stringValue, "Minnie");
     i++;
-
+    
     strcpy(record.fieldData[i].name, "age");
     record.fieldData[i].dataType = TYPE_INTEGER;
     record.fieldData[i].intValue = 19;
     i++;
-
+    
     strcpy(record.fieldData[i].name, "address");
     record.fieldData[i].dataType = TYPE_STRING;
     strcpy(record.fieldData[i].stringValue, "Urayasu");
     i++;
-
+    
     record.numField = i;
-
+    
     if (insertRecord(TABLE_NAME, &record) != OK) {
         fprintf(stderr, "Cannot insert record.\n");
         return NG;
     }
-
+    
     /*
      * 以下のレコードを挿入
-     * ('i00003', 'Donald', 17, 'Florida')
+     * ('i04003', 'Donald', 17, 'Florida')
      */
     i = 0;
     strcpy(record.fieldData[i].name, "id");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "i00003");
+    strcpy(record.fieldData[i].stringValue, "i04003");
     i++;
-
+    
     strcpy(record.fieldData[i].name, "name");
     record.fieldData[i].dataType = TYPE_STRING;
     strcpy(record.fieldData[i].stringValue, "Donald");
     i++;
-
+    
     strcpy(record.fieldData[i].name, "age");
     record.fieldData[i].dataType = TYPE_INTEGER;
     record.fieldData[i].intValue = 17;
     i++;
-
+    
     strcpy(record.fieldData[i].name, "address");
     record.fieldData[i].dataType = TYPE_STRING;
     strcpy(record.fieldData[i].stringValue, "Florida");
     i++;
-
+    
     record.numField = i;
-
+    
     if (insertRecord(TABLE_NAME, &record) != OK) {
         fprintf(stderr, "Cannot insert record.\n");
         return NG;
     }
-
+    
     /*
      * 以下のレコードを挿入
-     * ('i00004', 'Daisy', 15, 'Florida')
+     * ('i04003', 'Donald', 17, 'Florida')
      */
     i = 0;
     strcpy(record.fieldData[i].name, "id");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "i00004");
+    strcpy(record.fieldData[i].stringValue, "i04003");
     i++;
-
+    
     strcpy(record.fieldData[i].name, "name");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "Daisy");
+    strcpy(record.fieldData[i].stringValue, "Donald");
     i++;
-
+    
     strcpy(record.fieldData[i].name, "age");
     record.fieldData[i].dataType = TYPE_INTEGER;
-    record.fieldData[i].intValue = 15;
+    record.fieldData[i].intValue = 17;
     i++;
-
+    
     strcpy(record.fieldData[i].name, "address");
     record.fieldData[i].dataType = TYPE_STRING;
     strcpy(record.fieldData[i].stringValue, "Florida");
     i++;
-
+    
     record.numField = i;
-
+    
     if (insertRecord(TABLE_NAME, &record) != OK) {
         fprintf(stderr, "Cannot insert record.\n");
         return NG;
     }
-
+    
+    /*
+     * 以下のレコードを挿入
+     * ('i04004', 'Daisy', 15, 'Florida')
+     */
+    i = 0;
+    strcpy(record.fieldData[i].name, "id");
+    record.fieldData[i].dataType = TYPE_STRING;
+    strcpy(record.fieldData[i].stringValue, "i04004");
+    i++;
+    
+    strcpy(record.fieldData[i].name, "name");
+    record.fieldData[i].dataType = TYPE_STRING;
+    strcpy(record.fieldData[i].stringValue, "Daisy");
+    i++;
+    
+    strcpy(record.fieldData[i].name, "age");
+    record.fieldData[i].dataType = TYPE_INTEGER;
+    record.fieldData[i].intValue = 15;
+    i++;
+    
+    strcpy(record.fieldData[i].name, "address");
+    record.fieldData[i].dataType = TYPE_STRING;
+    strcpy(record.fieldData[i].stringValue, "Florida");
+    i++;
+    
+    record.numField = i;
+    
+    if (insertRecord(TABLE_NAME, &record) != OK) {
+        fprintf(stderr, "Cannot insert record.\n");
+        return NG;
+    }
+    
     /* データを表示する */
     printTableData(TABLE_NAME);
-
+    
     return OK;
 }
 
@@ -165,6 +229,8 @@ Result test2()
     condition.dataType = TYPE_INTEGER;
     condition.operator = OPR_GREATER_THAN;
     condition.intValue = 17;
+    condition.distinct = NOT_DISTINCT;
+
 
     if ((recordSet = selectRecord(TABLE_NAME, NULL, &condition)) == NULL) {
         fprintf(stderr, "Cannot select records.\n");
@@ -177,6 +243,28 @@ Result test2()
 
     /* 結果を解放 */
     freeRecordSet(recordSet);
+    
+    /*
+     * 以下の検索を実行
+     * select distinct * from TABLE_NAME where age > 17
+     */
+    strcpy(condition.name, "age");
+    condition.dataType = TYPE_INTEGER;
+    condition.operator = OPR_GREATER_THAN;
+    condition.intValue = 17;
+    condition.distinct = DISTINCT;
+    
+    if ((recordSet = selectRecord(TABLE_NAME, NULL, &condition)) == NULL) {
+        fprintf(stderr, "Cannot select records.\n");
+        return NG;
+    }
+    
+    /* 結果を表示 */
+    printf("select distinct * from TABLE_NAME where age > 17\n");
+    printRecordSet(TABLE_NAME, recordSet, NULL);
+    
+    /* 結果を解放 */
+    freeRecordSet(recordSet);
 
     /*
      * 以下の検索を実行
@@ -186,6 +274,7 @@ Result test2()
     condition.dataType = TYPE_STRING;
     condition.operator = OPR_NOT_EQUAL;
     strcpy(condition.stringValue, "Florida");
+    condition.distinct = NOT_DISTINCT;
 
     if ((recordSet = selectRecord(TABLE_NAME, NULL, &condition)) == NULL) {
         fprintf(stderr, "Cannot select records.\n");
@@ -201,18 +290,25 @@ Result test2()
     
     /*
      * 以下の検索を実行
-     * select name from TABLE_NAME'
+     * select distinct name from TABLE_NAME'
      */
     strcpy(fieldList.name[0], "name");
     fieldList.numField = 1;
     
-    if ((recordSet = selectRecord(TABLE_NAME, &fieldList, NULL)) == NULL) {
+    strcpy(condition.name, "");
+    condition.dataType = TYPE_UNKNOWN;
+    condition.operator = OPR_UNKNOWN;
+    strcpy(condition.stringValue, "");
+    condition.distinct = DISTINCT;
+    
+    
+    if ((recordSet = selectRecord(TABLE_NAME, &fieldList, &condition)) == NULL) {
         fprintf(stderr, "Cannot select records.\n");
         return NG;
     }
     
     /* 結果を表示 */
-    printf("select name from TABLE_NAME\n");
+    printf("select distinct name from TABLE_NAME\n");
     printRecordSet(TABLE_NAME, recordSet, &fieldList);
     
     /*

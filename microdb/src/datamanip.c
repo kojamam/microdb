@@ -367,6 +367,71 @@ Result insertRecord(char *tableName, RecordData *recordData){
     return OK;
 }
 
+/*
+ * checkDuplication -- レコードが重複しているかをチェック
+ *
+ * 引数:
+ *	recordChecked: チェックするレコード
+ *  tableInfo:  テーブル情報
+ *  recordSet:  重複のチェック先
+ *
+ * 返り値:
+ *	重複していなければOK, 重複していればNG, エラーはNULL
+ */
+static Result checkDuplication(RecordData *recordChecked, RecordSet *recordSet){
+    typedef enum { SAME = 0, DIFFERNT = 1 } Flag;
+    
+    int i, j;
+    RecordData *record;
+    Flag fieldFlag;
+    
+    record = recordSet->recordData;
+    
+    for (i=0; i<recordSet->numRecord; ++i) {
+        for (j=0; j<record->numField; ++j) {
+            switch (record->fieldData[j].dataType) {
+                case TYPE_INTEGER:
+                    /* 整数の時、比較して違っていたら次へ */
+                    if(record->fieldData[j].intValue == recordChecked->fieldData[j].intValue){
+                        fieldFlag = SAME;
+                    }else{
+                        fieldFlag = DIFFERNT;
+                    }
+                    break;
+                case TYPE_STRING:
+                    /* 文字列の時、比較して違っていたらOKを返す */
+                    if (strcmp(record->fieldData[j].stringValue, recordChecked->fieldData[j].stringValue) == 0) {
+                        fieldFlag = SAME;
+                    }else{
+                        fieldFlag = DIFFERNT;
+                    }
+                    break;
+                default:
+                    /* ここにくることはないはず */
+                    freeRecordSet(recordSet);
+                    return NG;
+            }
+            
+            /*フィールド値が違っていたらその後のレコードを読むのをやめる*/
+            if(fieldFlag == DIFFERNT){
+                break;
+            }
+            
+            /*最後のフィールドまで読んで、同じだったらレコードが重複しているのでNGを返す*/
+            if(j == record->numField - 1){
+                return NG;
+            }
+            
+        }/* レコードの読み込み終わり */
+        
+        /*次のrecordを読む */
+        record = record->next;
+        
+    }
+    
+    /* ここまで来たら重複なし */
+    return OK;
+}
 
 /*
 * checkCondition -- レコードが条件を満足するかどうかのチェック
@@ -378,10 +443,18 @@ Result insertRecord(char *tableName, RecordData *recordData){
 * 返り値:
 *	レコードrecordが条件conditionを満足すればOK、満足しなければNGを返す
 */
-static Result checkCondition(RecordData *recordData, Condition *condition){
+static Result checkCondition(RecordData *recordData, Condition *condition, RecordSet *recordSet){
     int i;
     OperatorType opType = condition->operator;
     int diff;
+    
+    /*DISTINCTフラグが立っている時重複チェック*/
+    if (condition->distinct == DISTINCT) {
+        /*重複してたらNGを返す*/
+        if (checkDuplication(recordData, recordSet) ==  NG) {
+            return NG;
+        }
+    }
 
     for(i=0; i<recordData->numField; ++i){
         if(strcmp(recordData->fieldData[i].name, condition->name) == 0){
@@ -557,7 +630,7 @@ RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condit
                 recordData2->numField = m;
 
                 /*条件を満足するかを確認して満たしていたらRecordSetの末尾に追加*/
-                if(condition == NULL || checkCondition(recordData1, condition) == OK){
+                if(condition == NULL || checkCondition(recordData1, condition, recordSet) == OK){
                     recordSet->numRecord++;
                     if(recordSet->recordData == NULL){
                         recordSet->recordData = recordData2;
@@ -625,7 +698,6 @@ void freeRecordSet(RecordSet *recordSet){
 */
 Result deleteRecord(char *tableName, Condition *condition){
 
-    RecordSet *recordSet;
     char filename[MAX_FILENAME];
     File *file;
     int numPage;
@@ -636,7 +708,6 @@ Result deleteRecord(char *tableName, Condition *condition){
     char *p, *q;
     RecordSlot recordSlot;
 
-    recordSet = (RecordSet*)malloc(sizeof(RecordSet));
 
     sprintf(filename, "%s%s", tableName, DATA_FILE_EXT);
     file = openFile(filename);
@@ -696,7 +767,7 @@ Result deleteRecord(char *tableName, Condition *condition){
                 }/* レコードの読み込み終わり */
 
                 /*条件を満足するかを確認して満たしていたら削除 */
-                if(condition == NULL || checkCondition(recordData, condition) == OK){
+                if(condition == NULL || checkCondition(recordData, condition, NULL) == OK){
                     /* 0埋め */
                     memset(page+recordSlot.offset, 0, recordSlot.size);
                     /* スロットの更新*/
