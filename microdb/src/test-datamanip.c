@@ -34,6 +34,11 @@ Result test1()
     record.fieldData[i].intValue = 20;
     i++;
     
+    strcpy(record.fieldData[i].name, "weight");
+    record.fieldData[i].dataType = TYPE_DOUBLE;
+    record.fieldData[i].doubleValue = 65.4;
+    i++;
+    
     strcpy(record.fieldData[i].name, "address");
     record.fieldData[i].dataType = TYPE_STRING;
     strcpy(record.fieldData[i].stringValue, "Urayasu");
@@ -64,6 +69,11 @@ Result test1()
     strcpy(record.fieldData[i].name, "age");
     record.fieldData[i].dataType = TYPE_INTEGER;
     record.fieldData[i].intValue = 20;
+    i++;
+    
+    strcpy(record.fieldData[i].name, "weight");
+    record.fieldData[i].dataType = TYPE_DOUBLE;
+    record.fieldData[i].doubleValue = 65.4;
     i++;
     
     strcpy(record.fieldData[i].name, "address");
@@ -98,6 +108,11 @@ Result test1()
     record.fieldData[i].intValue = 19;
     i++;
     
+    strcpy(record.fieldData[i].name, "weight");
+    record.fieldData[i].dataType = TYPE_DOUBLE;
+    record.fieldData[i].doubleValue = 46.8;
+    i++;
+    
     strcpy(record.fieldData[i].name, "address");
     record.fieldData[i].dataType = TYPE_STRING;
     strcpy(record.fieldData[i].stringValue, "Urayasu");
@@ -130,6 +145,11 @@ Result test1()
     record.fieldData[i].intValue = 17;
     i++;
     
+    strcpy(record.fieldData[i].name, "weight");
+    record.fieldData[i].dataType = TYPE_DOUBLE;
+    record.fieldData[i].doubleValue = 98.34;
+    i++;
+    
     strcpy(record.fieldData[i].name, "address");
     record.fieldData[i].dataType = TYPE_STRING;
     strcpy(record.fieldData[i].stringValue, "Florida");
@@ -162,6 +182,11 @@ Result test1()
     record.fieldData[i].intValue = 17;
     i++;
     
+    strcpy(record.fieldData[i].name, "weight");
+    record.fieldData[i].dataType = TYPE_DOUBLE;
+    record.fieldData[i].doubleValue = 98.34;
+    i++;
+    
     strcpy(record.fieldData[i].name, "address");
     record.fieldData[i].dataType = TYPE_STRING;
     strcpy(record.fieldData[i].stringValue, "Florida");
@@ -192,6 +217,11 @@ Result test1()
     strcpy(record.fieldData[i].name, "age");
     record.fieldData[i].dataType = TYPE_INTEGER;
     record.fieldData[i].intValue = 15;
+    i++;
+    
+    strcpy(record.fieldData[i].name, "weight");
+    record.fieldData[i].dataType = TYPE_DOUBLE;
+    record.fieldData[i].doubleValue = 39.1;
     i++;
     
     strcpy(record.fieldData[i].name, "address");
@@ -454,6 +484,10 @@ int main(int argc, char **argv)
 
     strcpy(tableInfo.fieldInfo[i].name, "age");
     tableInfo.fieldInfo[i].dataType = TYPE_INTEGER;
+    i++;
+    
+    strcpy(tableInfo.fieldInfo[i].name, "weight");
+    tableInfo.fieldInfo[i].dataType = TYPE_DOUBLE;
     i++;
 
     strcpy(tableInfo.fieldInfo[i].name, "address");

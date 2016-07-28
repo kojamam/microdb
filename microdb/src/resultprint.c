@@ -64,19 +64,7 @@ static void printTableHeader(TableInfo *tableInfo, FieldList *fieldList){
         }
 
         if (isIncluded == 1) {
-            switch (tableInfo->fieldInfo[i].dataType) {
-                case TYPE_INTEGER:
-                    printf("%10s |", tableInfo->fieldInfo[i].name);
-                    break;
-                case TYPE_STRING:
-                    printf("%10s |", tableInfo->fieldInfo[i].name);
-                    break;
-                default:
-                    /* ここにくることはないはず */
-                    freeTableInfo(tableInfo);
-                    return;
-                    break;
-            }
+            printf("%10s |", tableInfo->fieldInfo[i].name);
         }
         
     }
@@ -134,6 +122,7 @@ void printTableData(char *tableName){
         /* スロットを見ていく */
         for (j=0; j<numRecordSlot; ++j) {
             int intValue;
+            double doubleValue;
             char stringValue[MAX_STRING];
             int stringLen;
             
@@ -154,8 +143,14 @@ void printTableData(char *tableName){
                         case TYPE_INTEGER:
                             /* 整数の時、表示 */
                             memcpy(&intValue, q, sizeof(int));
-                            printf("%10d |", *q);
+                            printf("%10d |", intValue);
                             q += sizeof(int);
+                            break;
+                        case TYPE_DOUBLE:
+                            /* 浮動小数点のとき表示 */
+                            memcpy(&doubleValue, q, sizeof(double));
+                            printf("%10f |", doubleValue);
+                            q += sizeof(double);
                             break;
                         case TYPE_STRING:
                             /* 文字列の時、表示 */
@@ -220,6 +215,10 @@ void printRecordSet(char *tableName, RecordSet *recordSet, FieldList *fieldList)
                 case TYPE_INTEGER:
                     /* 整数の時、表示 */
                     printf("%10d |", record->fieldData[j].intValue);
+                    break;
+                case TYPE_DOUBLE:
+                    /* 浮動小数点の時、表示 */
+                    printf("%10f |", record->fieldData[j].doubleValue);
                     break;
                 case TYPE_STRING:
                     /* 文字列の時、表示 */
@@ -287,6 +286,9 @@ void printTableInfo(char *tableName){
         switch (tableInfo->fieldInfo[i].dataType) {
             case TYPE_INTEGER:
                 printf("integer\n");
+                break;
+            case TYPE_DOUBLE:
+                printf("double\n");
                 break;
             case TYPE_STRING:
                 printf("string\n");
