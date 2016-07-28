@@ -55,7 +55,8 @@ typedef enum DataType DataType;
 enum DataType {
     TYPE_UNKNOWN = 0,			/* データ型不明 */
     TYPE_INTEGER = 1,			/* 整数型 */
-    TYPE_STRING = 2			/* 文字列型 */
+    TYPE_DOUBLE = 2,             /* 倍精度浮動小数点型 */
+    TYPE_STRING = 3			/* 文字列型 */
 };
 
 /*
@@ -84,6 +85,7 @@ struct FieldData {
     char name[MAX_FIELD_NAME];		/* フィールド名 */
     DataType dataType;			/* フィールドのデータ型 */
     int intValue;			/* integer型の場合の値 */
+    double doubleValue;     /* double型の場合の値 */
     char stringValue[MAX_STRING];	/* string型の場合の値 */
 };
 
@@ -146,6 +148,7 @@ struct Condition {
     DataType dataType;			/* フィールドのデータ型 */
     OperatorType operator;		/* 比較演算子 */
     int intValue;			/* integer型の場合の値 */
+    double doubleValue;      /* double型の場合の値 */
     char stringValue[MAX_STRING];	/* string型の場合の値 */
     distinctFlag distinct;		/* 重複除去フラグ */
 };

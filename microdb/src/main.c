@@ -220,6 +220,8 @@ void callCreateTable()
             tableInfo.fieldInfo[numField].dataType = TYPE_INTEGER;
         }else if(strcmp(token, "string") == 0){
             tableInfo.fieldInfo[numField].dataType = TYPE_STRING;
+        }else if(strcmp(token, "double")){
+            tableInfo.fieldInfo[numField].dataType = TYPE_DOUBLE;
         }else{
             tableInfo.fieldInfo[numField].dataType = TYPE_UNKNOWN;
         }
@@ -368,6 +370,9 @@ void callInsertRecord()
         if (tableInfo->fieldInfo[i].dataType == TYPE_INTEGER) {
             /* トークンの文字列を整数値に変換して設定 */
             recordData.fieldData[i].intValue = atoi(token);
+        }else if (tableInfo->fieldInfo[i].dataType == TYPE_DOUBLE){
+            /* トークンの文字列を少数値に変換して設定 */
+            recordData.fieldData[i].doubleValue = atof(token);
         }else if(tableInfo->fieldInfo[i].dataType == TYPE_STRING){
             char stringVal[MAX_STRING];
             /* はじめが'であるかをチェック */
@@ -447,6 +452,8 @@ void callSelectRecord()
     strcpy(cond.name, "");
     cond.dataType = TYPE_UNKNOWN;
     cond.operator = OPR_UNKNOWN;
+    cond.intValue = 0;
+    cond.doubleValue = 0;
     strcpy(cond.stringValue, "");
     cond.distinct = NOT_DISTINCT;
     
@@ -604,7 +611,10 @@ void callSelectRecord()
         if (cond.dataType == TYPE_INTEGER) {
             /* トークンの文字列を整数値に変換して設定 */
             cond.intValue = atoi(token);
-        } else if (cond.dataType == TYPE_STRING) {
+        }else if (cond.dataType == TYPE_DOUBLE){
+            /* トークンの文字列を小数値に変換して設定 */
+            cond.doubleValue = atof(token);
+        }else if (cond.dataType == TYPE_STRING) {
             char stringVal[MAX_STRING];
             /* はじめが'であるかをチェック */
             if(token == NULL || token[0] != '\''){
@@ -670,8 +680,10 @@ void callDeleteRecord(){
     strcpy(cond.name, "");
     cond.dataType = TYPE_UNKNOWN;
     cond.operator = OPR_UNKNOWN;
-    strcpy(cond.stringValue, "");
     cond.intValue = 0;
+    cond.doubleValue = 0;
+    strcpy(cond.stringValue, "");
+    cond.distinct = NOT_DISTINCT;
     
     /* deleteの次のトークンを読み込み、それが"from"かどうかをチェック */
     token = getNextToken();
@@ -778,7 +790,10 @@ void callDeleteRecord(){
     if (cond.dataType == TYPE_INTEGER) {
         /* トークンの文字列を整数値に変換して設定 */
         cond.intValue = atoi(token);
-    } else if (cond.dataType == TYPE_STRING) {
+    }else if (cond.dataType == TYPE_DOUBLE){
+        /* トークンの文字列を小数に変換して設定 */
+        cond.intValue = atof(token);
+    }else if (cond.dataType == TYPE_STRING) {
         char stringVal[MAX_STRING];
         /* はじめが'であるかをチェック */
         if(token == NULL || token[0] != '\''){
