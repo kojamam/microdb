@@ -338,7 +338,7 @@ Result readPage(File *file, int pageNum, char *page){
             
             /* 末端バッファを初期化してemptyBufに */
             buf->file = NULL;
-            buf->pageNum = 0;
+            buf->pageNum = -1;
             memset(buf->page, 0, PAGE_SIZE);
             
             emptyBuf = buf;
@@ -453,7 +453,7 @@ Result writePage(File *file, int pageNum, char *page){
     emptyBuf->pageNum = pageNum;
     
     /* アクセスされたバッファ(emptyBuf)を、リストの先頭に移動させる */
-    moveBufferToListHead(emptyBuf);    
+    moveBufferToListHead(emptyBuf);
     return OK;
 
 }
