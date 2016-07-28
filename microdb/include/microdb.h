@@ -78,15 +78,23 @@ struct TableInfo {
 };
 
 /*
+ * FieldValue -- 1つのフィールドの値を格納する共用体
+ */
+typedef union FieldValue FieldValue;
+union FieldValue {
+    int intVal;                 /* integer型の場合の値 */
+    double doubleVal;           /* double型の場合の値 */
+    char stringVal[MAX_STRING]; /* string型の場合の値 */
+};
+
+/*
  * FieldData -- 1つのフィールドのデータを表現する構造体
  */
 typedef struct FieldData FieldData;
 struct FieldData {
     char name[MAX_FIELD_NAME];		/* フィールド名 */
     DataType dataType;			/* フィールドのデータ型 */
-    int intValue;			/* integer型の場合の値 */
-    double doubleValue;     /* double型の場合の値 */
-    char stringValue[MAX_STRING];	/* string型の場合の値 */
+    FieldValue val;
 };
 
 /*
@@ -147,9 +155,7 @@ struct Condition {
     char name[MAX_FIELD_NAME];		/* フィールド名 */
     DataType dataType;			/* フィールドのデータ型 */
     OperatorType operator;		/* 比較演算子 */
-    int intValue;			/* integer型の場合の値 */
-    double doubleValue;      /* double型の場合の値 */
-    char stringValue[MAX_STRING];	/* string型の場合の値 */
+    FieldValue val;              /* フィールド値].intValue */
     distinctFlag distinct;		/* 重複除去フラグ */
 };
 

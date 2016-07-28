@@ -21,27 +21,27 @@ Result test1()
     i = 0;
     strcpy(record.fieldData[i].name, "id");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "i04001");
+    strcpy(record.fieldData[i].val.stringVal, "i04001");
     i++;
     
     strcpy(record.fieldData[i].name, "name");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "Mickey");
+    strcpy(record.fieldData[i].val.stringVal, "Mickey");
     i++;
     
     strcpy(record.fieldData[i].name, "age");
     record.fieldData[i].dataType = TYPE_INTEGER;
-    record.fieldData[i].intValue = 20;
+    record.fieldData[i].val.intVal = 20;
     i++;
     
     strcpy(record.fieldData[i].name, "weight");
     record.fieldData[i].dataType = TYPE_DOUBLE;
-    record.fieldData[i].doubleValue = 65.4;
+    record.fieldData[i].val.doubleVal = 65.4;
     i++;
     
     strcpy(record.fieldData[i].name, "address");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "Urayasu");
+    strcpy(record.fieldData[i].val.stringVal, "Urayasu");
     i++;
     
     record.numField = i;
@@ -58,27 +58,27 @@ Result test1()
     i = 0;
     strcpy(record.fieldData[i].name, "id");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "i04001");
+    strcpy(record.fieldData[i].val.stringVal, "i04001");
     i++;
     
     strcpy(record.fieldData[i].name, "name");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "Mickey");
+    strcpy(record.fieldData[i].val.stringVal, "Mickey");
     i++;
     
     strcpy(record.fieldData[i].name, "age");
     record.fieldData[i].dataType = TYPE_INTEGER;
-    record.fieldData[i].intValue = 20;
+    record.fieldData[i].val.intVal = 20;
     i++;
     
     strcpy(record.fieldData[i].name, "weight");
     record.fieldData[i].dataType = TYPE_DOUBLE;
-    record.fieldData[i].doubleValue = 65.4;
+    record.fieldData[i].val.doubleVal = 65.4;
     i++;
     
     strcpy(record.fieldData[i].name, "address");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "Urayasu");
+    strcpy(record.fieldData[i].val.stringVal, "Urayasu");
     i++;
     
     record.numField = i;
@@ -95,27 +95,27 @@ Result test1()
     i = 0;
     strcpy(record.fieldData[i].name, "id");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "i04002");
+    strcpy(record.fieldData[i].val.stringVal, "i04002");
     i++;
     
     strcpy(record.fieldData[i].name, "name");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "Minnie");
+    strcpy(record.fieldData[i].val.stringVal, "Minnie");
     i++;
     
     strcpy(record.fieldData[i].name, "age");
     record.fieldData[i].dataType = TYPE_INTEGER;
-    record.fieldData[i].intValue = 19;
+    record.fieldData[i].val.intVal = 19;
     i++;
     
     strcpy(record.fieldData[i].name, "weight");
     record.fieldData[i].dataType = TYPE_DOUBLE;
-    record.fieldData[i].doubleValue = 46.8;
+    record.fieldData[i].val.doubleVal = 46.8;
     i++;
     
     strcpy(record.fieldData[i].name, "address");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "Urayasu");
+    strcpy(record.fieldData[i].val.stringVal, "Urayasu");
     i++;
     
     record.numField = i;
@@ -132,27 +132,27 @@ Result test1()
     i = 0;
     strcpy(record.fieldData[i].name, "id");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "i04003");
+    strcpy(record.fieldData[i].val.stringVal, "i04003");
     i++;
     
     strcpy(record.fieldData[i].name, "name");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "Donald");
+    strcpy(record.fieldData[i].val.stringVal, "Donald");
     i++;
     
     strcpy(record.fieldData[i].name, "age");
     record.fieldData[i].dataType = TYPE_INTEGER;
-    record.fieldData[i].intValue = 17;
+    record.fieldData[i].val.intVal = 17;
     i++;
     
     strcpy(record.fieldData[i].name, "weight");
     record.fieldData[i].dataType = TYPE_DOUBLE;
-    record.fieldData[i].doubleValue = 98.34;
+    record.fieldData[i].val.doubleVal = 98.34;
     i++;
     
     strcpy(record.fieldData[i].name, "address");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "Florida");
+    strcpy(record.fieldData[i].val.stringVal, "Florida");
     i++;
     
     record.numField = i;
@@ -169,27 +169,27 @@ Result test1()
     i = 0;
     strcpy(record.fieldData[i].name, "id");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "i04003");
+    strcpy(record.fieldData[i].val.stringVal, "i04003");
     i++;
     
     strcpy(record.fieldData[i].name, "name");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "Donald");
+    strcpy(record.fieldData[i].val.stringVal, "Donald");
     i++;
     
     strcpy(record.fieldData[i].name, "age");
     record.fieldData[i].dataType = TYPE_INTEGER;
-    record.fieldData[i].intValue = 17;
+    record.fieldData[i].val.intVal = 17;
     i++;
     
     strcpy(record.fieldData[i].name, "weight");
     record.fieldData[i].dataType = TYPE_DOUBLE;
-    record.fieldData[i].doubleValue = 98.34;
+    record.fieldData[i].val.doubleVal = 98.34;
     i++;
     
     strcpy(record.fieldData[i].name, "address");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "Florida");
+    strcpy(record.fieldData[i].val.stringVal, "Florida");
     i++;
     
     record.numField = i;
@@ -206,27 +206,27 @@ Result test1()
     i = 0;
     strcpy(record.fieldData[i].name, "id");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "i04004");
+    strcpy(record.fieldData[i].val.stringVal, "i04004");
     i++;
     
     strcpy(record.fieldData[i].name, "name");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "Daisy");
+    strcpy(record.fieldData[i].val.stringVal, "Daisy");
     i++;
     
     strcpy(record.fieldData[i].name, "age");
     record.fieldData[i].dataType = TYPE_INTEGER;
-    record.fieldData[i].intValue = 15;
+    record.fieldData[i].val.intVal = 15;
     i++;
     
     strcpy(record.fieldData[i].name, "weight");
     record.fieldData[i].dataType = TYPE_DOUBLE;
-    record.fieldData[i].doubleValue = 39.1;
+    record.fieldData[i].val.doubleVal = 39.1;
     i++;
     
     strcpy(record.fieldData[i].name, "address");
     record.fieldData[i].dataType = TYPE_STRING;
-    strcpy(record.fieldData[i].stringValue, "Florida");
+    strcpy(record.fieldData[i].val.stringVal, "Florida");
     i++;
     
     record.numField = i;
@@ -258,7 +258,7 @@ Result test2()
     strcpy(condition.name, "age");
     condition.dataType = TYPE_INTEGER;
     condition.operator = OPR_GREATER_THAN;
-    condition.intValue = 17;
+    condition.val.intVal = 17;
     condition.distinct = NOT_DISTINCT;
     
     fieldList.numField = -1;
@@ -283,7 +283,7 @@ Result test2()
     strcpy(condition.name, "age");
     condition.dataType = TYPE_INTEGER;
     condition.operator = OPR_GREATER_THAN;
-    condition.intValue = 17;
+    condition.val.intVal = 17;
     condition.distinct = DISTINCT;
     
     fieldList.numField = -1;
@@ -307,7 +307,7 @@ Result test2()
     strcpy(condition.name, "address");
     condition.dataType = TYPE_STRING;
     condition.operator = OPR_NOT_EQUAL;
-    strcpy(condition.stringValue, "Florida");
+    strcpy(condition.val.stringVal, "Florida");
     condition.distinct = NOT_DISTINCT;
     
     fieldList.numField = -1;
@@ -331,7 +331,7 @@ Result test2()
     strcpy(condition.name, "");
     condition.dataType = TYPE_UNKNOWN;
     condition.operator = OPR_UNKNOWN;
-    strcpy(condition.stringValue, "");
+    strcpy(condition.val.stringVal, "");
     condition.distinct = NOT_DISTINCT;
     
     strcpy(fieldList.name[0], "name");
@@ -356,7 +356,7 @@ Result test2()
     strcpy(condition.name, "address");
     condition.dataType = TYPE_STRING;
     condition.operator = OPR_NOT_EQUAL;
-    strcpy(condition.stringValue, "Florida");
+    strcpy(condition.val.stringVal, "Florida");
     condition.distinct = NOT_DISTINCT;
 
     strcpy(fieldList.name[0], "name");
@@ -394,7 +394,7 @@ Result test3()
     strcpy(condition.name, "name");
     condition.dataType = TYPE_STRING;
     condition.operator = OPR_NOT_EQUAL;
-    strcpy(condition.stringValue, "Mickey");
+    strcpy(condition.val.stringVal, "Mickey");
 
     if (deleteRecord(TABLE_NAME, &condition) != OK) {
         fprintf(stderr, "Cannot delete records.\n");
@@ -414,8 +414,8 @@ Result test3()
     strcpy(condition.name, "");
     condition.dataType = TYPE_UNKNOWN;
     condition.operator = OPR_UNKNOWN;
-    strcpy(condition.stringValue, "");
-    condition.intValue = 0;
+    strcpy(condition.val.stringVal, "");
+    condition.val.intVal = 0;
     
     if (deleteRecord(TABLE_NAME, &condition) != OK) {
         fprintf(stderr, "Cannot delete records.\n");

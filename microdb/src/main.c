@@ -40,7 +40,7 @@ static void setInputString(char *string)
 {
     char *p = string;
     char *q = inputString;
-    
+
     /* 入力行をコピーして保存する */
     while (*p != '\0') {
         /* 引用符の場合には、次の引用符まで読み飛ばす */
@@ -48,19 +48,19 @@ static void setInputString(char *string)
             char *quote;
             quote = p;
             *q++ = *p++;
-            
+
             /* 閉じる引用符(または文字列の最後)までコピーする */
             while (*p != *quote && *p != '\0') {
                 *q++ = *p++;
             }
-            
+
             /* 閉じる引用符自体もコピーする */
             if (*p == *quote) {
                 *q++ = *p++;
             }
             continue;
         }
-        
+
         /* 区切り記号の場合には、その前後に空白文字を入れる */
         if (*p == ',' || *p == '(' || *p == ')' || *p == '.') {
             *q++ = ' ';
@@ -70,9 +70,9 @@ static void setInputString(char *string)
             *q++ = *p++;
         }
     }
-    
+
     *q = '\0';
-    
+
     /* getNextToken()の読み出し開始位置を文字列の先頭に設定する */
     nextPosition = inputString;
 }
@@ -91,18 +91,18 @@ static char *getNextToken()
     char *start;
     char *end;
     char *p;
-    
+
     /* 空白文字が複数続いていたら、その分nextPositionを移動させる */
     while (*nextPosition == ' ') {
         nextPosition++;
     }
     start = nextPosition;
-    
+
     /* nextPositionの位置が文字列の最後('\0')だったら、解析終了 */
     if (*nextPosition == '\0') {
         return NULL;
     }
-    
+
     /* nextPositionの位置以降で、最初に見つかる空白文字の場所を探す */
     p = nextPosition;
     while (*p != ' ' && *p != '\0') {
@@ -111,12 +111,12 @@ static char *getNextToken()
             char *quote;
             quote = p;
             p++;
-            
+
             /* 閉じる引用符(または文字列の最後)まで読み飛ばす */
             while (*p != *quote && *p != '\0') {
                 p++;
             }
-            
+
             /* 閉じる引用符自体も読み飛ばす */
             if (*p == *quote) {
                 p++;
@@ -124,10 +124,10 @@ static char *getNextToken()
         } else {
             p++;
         }
-        
+
     }
     end = p;
-    
+
     /*
      * 空白文字を終端文字で置き換えるとともに、
      * 次回のgetNextToken()の呼び出しのために
@@ -144,7 +144,7 @@ static char *getNextToken()
          */
         nextPosition = end;
     }
-    
+
     /* 字句の先頭番地を返す */
     return start;
 }
@@ -167,7 +167,7 @@ void callCreateTable()
     char *tableName;
     int numField;
     TableInfo tableInfo;
-    
+
     /* createの次のトークンを読み込み、それが"table"かどうかをチェック */
     token = getNextToken();
     if (token == NULL || strcmp(token, "table") != 0) {
@@ -175,14 +175,14 @@ void callCreateTable()
         printf("入力行に間違いがあります。\n");
         return;
     }
-    
+
     /* テーブル名を読み込む */
     if ((tableName = getNextToken()) == NULL) {
         /* 文法エラー */
         printf("入力行に間違いがあります。\n");
         return;
     }
-    
+
     /* 次のトークンを読み込み、それが"("かどうかをチェック */
     token = getNextToken();
     if (token == NULL || strcmp(token, "(") != 0) {
@@ -190,7 +190,7 @@ void callCreateTable()
         printf("入力行に間違いがあります。\n");
         return;
     }
-    
+
     /*
      * ここから、フィールド名とデータ型の組を繰り返し読み込み、
      * 配列fieldInfoに入れていく。
@@ -203,18 +203,18 @@ void callCreateTable()
             printf("入力行に間違いがあります。\n");
             return;
         }
-        
+
         /* 読み込んだトークンが")"だったら、ループから抜ける */
         if (strcmp(token, ")") == 0) {
             break;
         }
-        
+
         /* フィールド名を配列に設定 */
         strcpy(tableInfo.fieldInfo[numField].name, token);
-        
+
         /* 次のトークン(データ型)の読み込み */
         token = getNextToken();
-        
+
         /* データ型を配列に設定 */
         if(strcmp(token, "int") == 0){
             tableInfo.fieldInfo[numField].dataType = TYPE_INTEGER;
@@ -225,19 +225,19 @@ void callCreateTable()
         }else{
             tableInfo.fieldInfo[numField].dataType = TYPE_UNKNOWN;
         }
-        
+
         /* フィールド数をカウントする */
         numField++;
-        
+
         /* フィールド数が上限を超えていたらエラー */
         if (numField > MAX_FIELD) {
             printf("フィールド数が上限を超えています。\n");
             return;
         }
-        
+
         /* 次のトークンの読み込み */
         token = getNextToken();
-        
+
         /* 読み込んだトークンが")"だったら、ループから抜ける */
         if (strcmp(token, ")") == 0) {
             break;
@@ -250,9 +250,9 @@ void callCreateTable()
             return;
         }
     }
-    
+
     tableInfo.numField = numField;
-    
+
     /* createTableを呼び出し、テーブルを作成 */
     if (createTable(tableName, &tableInfo) == OK) {
         printf("テーブルを作成しました。\n");
@@ -278,7 +278,7 @@ void callDropTable()
 {
     char *token;
     char *tableName;
-    
+
     /* createの次のトークンを読み込み、それが"table"かどうかをチェック */
     token = getNextToken();
     if (token == NULL || strcmp(token, "table") != 0) {
@@ -286,14 +286,14 @@ void callDropTable()
         printf("入力行に間違いがあります。\n");
         return;
     }
-    
+
     /* テーブル名を読み込む */
     if ((tableName = getNextToken()) == NULL) {
         /* 文法エラー */
         printf("入力行に間違いがあります。\n");
         return;
     }
-    
+
     /* createTableを呼び出し、テーブルを作成 */
     if (dropTable(tableName) == OK) {
         printf("テーブルを削除しました。\n");
@@ -321,7 +321,7 @@ void callInsertRecord()
     TableInfo *tableInfo;
     RecordData recordData;
     int i, j;
-    
+
     /* insertの次のトークンを読み込み、それが"into"かどうかをチェック */
     token = getNextToken();
     if (token == NULL || strcmp(token, "into") != 0) {
@@ -329,21 +329,21 @@ void callInsertRecord()
         printf("入力行に間違いがあります。\n");
         return;
     }
-    
+
     /* テーブル名を読み込む */
     if ((tableName = getNextToken()) == NULL) {
         /* 文法エラー */
         printf("入力行に間違いがあります。\n");
         return;
     }
-    
+
     /* tableInfoを読み込み */
     if((tableInfo = getTableInfo(tableName)) == NULL){
         /* 文法エラー */
         printf("指定したテーブルは存在しません。\n");
         return;
     }
-    
+
     /* 次のトークンを読み込み、それが"("かどうかをチェック */
     token = getNextToken();
     if (token == NULL || strcmp(token, "(") != 0) {
@@ -351,7 +351,7 @@ void callInsertRecord()
         printf("入力行に間違いがあります。\n");
         return;
     }
-    
+
     recordData.numField = tableInfo->numField;
 
     for(i=0; i<tableInfo->numField; ++i){
@@ -366,13 +366,13 @@ void callInsertRecord()
             printf("入力行に間違いがあります。\n");
             return;
         }
-        
+
         if (tableInfo->fieldInfo[i].dataType == TYPE_INTEGER) {
             /* トークンの文字列を整数値に変換して設定 */
-            recordData.fieldData[i].intValue = atoi(token);
+            recordData.fieldData[i].val.intVal = atoi(token);
         }else if (tableInfo->fieldInfo[i].dataType == TYPE_DOUBLE){
             /* トークンの文字列を少数値に変換して設定 */
-            recordData.fieldData[i].doubleValue = atof(token);
+            recordData.fieldData[i].val.doubleVal = atof(token);
         }else if(tableInfo->fieldInfo[i].dataType == TYPE_STRING){
             char stringVal[MAX_STRING];
             /* はじめが'であるかをチェック */
@@ -381,16 +381,16 @@ void callInsertRecord()
                 printf("条件式の指定に間違いがあります。\n");
                 return;
             }
-            
+
             /* 'の次からコピーしていく */
             for(j = 0; token[j+1] != '\0'; j++){
                 stringVal[j] = token[j+1];
             }
-            
+
             /* 'でしめられていたらそれを\0にしてコピーする */
             if(stringVal[j-1] == '\''){
                 stringVal[j-1] = '\0';
-                strcpy(recordData.fieldData[i].stringValue, stringVal);
+                strcpy(recordData.fieldData[i].val.stringVal, stringVal);
             }else{
                 printf("値が不正です。\n");
                 return;
@@ -401,25 +401,25 @@ void callInsertRecord()
             fprintf(stderr, "Unknown data type found.\n");
             exit(1);
         }
-        
+
         /* 次のトークンを読み込み、それが","なら次のフィールドを読み込み */
         token = getNextToken();
         if (strcmp(token, ",") == 0) {
             continue;
         }
     }
-    
+
     /* トークンが")"かどうかをチェック */
     if (token == NULL || strcmp(token, ")") != 0) {
         /* 文法エラー */
         printf("入力行に間違いがあります。\n");
         return;
     }
-    
+
     recordData.next = NULL;
-    
+
     insertRecord(tableName, &recordData);
-    
+
 }
 
 /*
@@ -444,19 +444,19 @@ void callSelectRecord()
     Condition cond;
     RecordSet *recordSet;
     int i, numField;
-    
+
     /*fieldListを初期化*/
     fieldList.numField = -1;
-    
+
     /*conditonを初期化*/
     strcpy(cond.name, "");
     cond.dataType = TYPE_UNKNOWN;
     cond.operator = OPR_UNKNOWN;
-    cond.intValue = 0;
-    cond.doubleValue = 0;
-    strcpy(cond.stringValue, "");
+    cond.val.intVal = 0;
+    cond.val.doubleVal = 0;
+    strcpy(cond.val.stringVal, "");
     cond.distinct = NOT_DISTINCT;
-    
+
     /* selectの次のトークンを読み込み、それが"*"かどうかをチェック */
     token = getNextToken();
     if (token == NULL) {
@@ -464,27 +464,27 @@ void callSelectRecord()
         printf("入力行に間違いがあります。\n");
         return;
     }
-    
+
     if(strcmp(token, "distinct")==0){
         cond.distinct = DISTINCT;
         token = getNextToken();
     }else{
         cond.distinct = NOT_DISTINCT;
     }
-    
+
     if(strcmp(token, "*") != 0){
         numField = 0;
         for(;;) {
-            
+
             /* フィールド名を配列に設定 */
             strcpy(fieldList.name[numField], token);
-            
+
             /* フィールド数をカウントする */
             numField++;
-            
+
             /* 次のトークンの読み込み */
             token = getNextToken();
-            
+
             /* 読み込んだトークンが")"だったら、ループから抜ける */
             if (strcmp(token, "from") == 0) {
                 break;
@@ -517,14 +517,14 @@ void callSelectRecord()
         printf("入力行に間違いがあります。\n");
         return;
     }
-    
+
     /* tableInfoを読み込み */
     if((tableInfo = getTableInfo(tableName)) == NULL){
         /* 文法エラー */
         printf("指定したテーブルは存在しません。\n");
         return;
     }
-    
+
     /* 次のトークンを取得 */
     token = getNextToken();
     /* "select * from TABLENAME" のように条件句がない時 */
@@ -547,10 +547,10 @@ void callSelectRecord()
         if ((token = getNextToken()) == NULL) {
             /* 文法エラー */
             printf("入力行に間違いがあります。\n");
-            
+
             /* 不要になったメモリ領域を解放する */
             freeTableInfo(tableInfo);
-            
+
             return;
         }
         strcpy(cond.name, token);
@@ -610,10 +610,10 @@ void callSelectRecord()
         /* 条件式の値を構造体に設定 */
         if (cond.dataType == TYPE_INTEGER) {
             /* トークンの文字列を整数値に変換して設定 */
-            cond.intValue = atoi(token);
+            cond.val.intVal = atoi(token);
         }else if (cond.dataType == TYPE_DOUBLE){
             /* トークンの文字列を小数値に変換して設定 */
-            cond.doubleValue = atof(token);
+            cond.val.doubleVal = atof(token);
         }else if (cond.dataType == TYPE_STRING) {
             char stringVal[MAX_STRING];
             /* はじめが'であるかをチェック */
@@ -622,21 +622,21 @@ void callSelectRecord()
                 printf("条件式の指定に間違いがあります。\n");
                 return;
             }
-            
+
             /* 'の次からコピーしていく */
             for(i = 0; token[i+1] != '\0'; i++){
                 stringVal[i] = token[i+1];
             }
-            
+
             /* 'でしめられていたらそれを\0にしてコピーする */
             if(stringVal[i-1] == '\''){
                 stringVal[i-1] = '\0';
-                strcpy(cond.stringValue, stringVal);
+                strcpy(cond.val.stringVal, stringVal);
             }else{
                 printf("条件式の指定に間違いがあります。\n");
                 return;
             }
-            
+
         } else {
             /* ここに来ることはないはず */
             fprintf(stderr, "Unknown data type found.\n");
@@ -649,7 +649,7 @@ void callSelectRecord()
             return;
         }
     }
-    
+
     /* 結果を表示 */
     printRecordSet(tableName, recordSet, &fieldList);
     /* 結果を解放 */
@@ -675,16 +675,16 @@ void callDeleteRecord(){
     TableInfo *tableInfo;
     Condition cond;
     int i;
-    
+
     /*conditionを初期化*/
     strcpy(cond.name, "");
     cond.dataType = TYPE_UNKNOWN;
     cond.operator = OPR_UNKNOWN;
-    cond.intValue = 0;
-    cond.doubleValue = 0;
-    strcpy(cond.stringValue, "");
+    cond.val.intVal = 0;
+    cond.val.doubleVal = 0;
+    strcpy(cond.val.stringVal, "");
     cond.distinct = NOT_DISTINCT;
-    
+
     /* deleteの次のトークンを読み込み、それが"from"かどうかをチェック */
     token = getNextToken();
     if (token == NULL || strcmp(token, "from") != 0) {
@@ -692,21 +692,21 @@ void callDeleteRecord(){
         printf("入力行に間違いがあります。\n");
         return;
     }
-    
+
     /* テーブル名を読み込む */
     if ((tableName = getNextToken()) == NULL) {
         /* 文法エラー */
         printf("入力行に間違いがあります。\n");
         return;
     }
-    
+
     /* tableInfoを読み込み */
     if((tableInfo = getTableInfo(tableName)) == NULL){
         /* 文法エラー */
         printf("指定したテーブルは存在しません。\n");
         return;
     }
-    
+
     /*次のトークンの読み込み*/
     token = getNextToken();
     /* "delete from TABLENAME" のように条件句がない時 */
@@ -714,26 +714,26 @@ void callDeleteRecord(){
         deleteRecord(tableName, &cond);
         return;
     }
-    
+
     /* "where"かどうかをチェック */
     if (strcmp(token, "where") != 0) {
         /* 文法エラー */
         printf("入力行に間違いがあります。\n");
         return;
     }
-    
+
     /* 条件式のフィールド名を読み込む */
     if ((token = getNextToken()) == NULL) {
         /* 文法エラー */
         printf("入力行に間違いがあります。\n");
-        
+
         /* 不要になったメモリ領域を解放する */
         freeTableInfo(tableInfo);
-        
+
         return;
     }
     strcpy(cond.name, token);
-    
+
     /* 条件式に指定されたフィールドのデータ型を調べる */
     cond.dataType = TYPE_UNKNOWN;
     for (i = 0; i < tableInfo->numField; i++) {
@@ -743,23 +743,23 @@ void callDeleteRecord(){
             break;
         }
     }
-    
+
     /* 不要になったメモリ領域を解放する */
     freeTableInfo(tableInfo);
-    
+
     /* フィールドのデータ型がわからなければ、文法エラー */
     if (cond.dataType == TYPE_UNKNOWN) {
         printf("指定したフィールドが存在しません。\n");
         return;
     }
-    
+
     /* 条件式の比較演算子を読み込む */
     if ((token = getNextToken()) == NULL) {
         /* 文法エラー */
         printf("条件式の指定に間違いがあります。\n");
         return;
     }
-    
+
     /* 条件式の比較演算子を構造体に設定 */
     if(strcmp(token, "=") == 0){
         cond.operator = OPR_EQUAL;
@@ -778,21 +778,21 @@ void callDeleteRecord(){
         printf("条件式の指定に間違いがあります。\n");
         return;
     }
-    
+
     /* 条件式の値を読み込む */
     if ((token = getNextToken()) == NULL) {
         /* 文法エラー */
         printf("条件式の指定に間違いがあります。\n");
         return;
     }
-    
+
     /* 条件式の値を構造体に設定 */
     if (cond.dataType == TYPE_INTEGER) {
         /* トークンの文字列を整数値に変換して設定 */
-        cond.intValue = atoi(token);
+        cond.val.intVal = atoi(token);
     }else if (cond.dataType == TYPE_DOUBLE){
         /* トークンの文字列を小数に変換して設定 */
-        cond.intValue = atof(token);
+        cond.val.intVal = atof(token);
     }else if (cond.dataType == TYPE_STRING) {
         char stringVal[MAX_STRING];
         /* はじめが'であるかをチェック */
@@ -801,30 +801,30 @@ void callDeleteRecord(){
             printf("条件式の指定に間違いがあります。\n");
             return;
         }
-        
+
         /* 'の次からコピーしていく */
         for(i = 0; token[i+1] != '\0'; i++){
             stringVal[i] = token[i+1];
         }
-        
+
         /* 'でしめられていたらそれを\0にしてコピーする */
         if(stringVal[i-1] == '\''){
             stringVal[i-1] = '\0';
-            strcpy(cond.stringValue, stringVal);
+            strcpy(cond.val.stringVal, stringVal);
         }else{
             printf("条件式の指定に間違いがあります。\n");
             return;
         }
-        
+
      } else {
          /* ここに来ることはないはず */
          fprintf(stderr, "Unknown data type found.\n");
          exit(1);
      }
-    
+
     /*distinct関係ないので*/
     cond.distinct = NOT_DISTINCT;
-    
+
     deleteRecord(tableName, &cond);
 }
 
@@ -836,65 +836,65 @@ int main()
     char input[MAX_INPUT];
     char *token;
     char *line;
-    
+
     /* ファイルモジュールの初期化 */
     if (initializeFileModule() != OK) {
         fprintf(stderr, "Cannot initialize file module.\n");
         exit(1);
     }
-    
+
     /* データ定義ジュールの初期化 */
     if (initializeDataDefModule() != OK) {
         fprintf(stderr, "Cannot initialize data definition module.\n");
         exit(1);
     }
-    
+
     /* データ操作ジュールの初期化 */
     if (initializeDataManipModule() != OK) {
         fprintf(stderr, "Cannot initialize data manipulation module.\n");
         exit(1);
     }
-    
+
     /* ウェルカムメッセージを出力 */
     printf("マイクロDBMSを起動しました。\n");
-    
+
     /* 1行ずつ入力を読み込みながら、処理を行う */
     for(;;) {
         /* プロンプトを出力して、キーボード入力を1行読み込む */
         printf("\nDDLまたはDMLを入力してください。\n");
         line = readline("> ");
-        
+
         /* EOFになったら終了 */
         if (line == NULL) {
             printf("マイクロDBMSを終了します。\n\n");
             break;
         }
-        
+
         /* 字句解析するために入力文字列を設定する */
         strncpy(input, line, MAX_INPUT);
         setInputString(input);
-        
+
         /* 入力の履歴を保存する */
         if (line && *line) {
             add_history(line);
         }
-        
+
         free(line);
-        
+
         /* 最初のトークンを取り出す */
         token = getNextToken();
-        
+
         /* 入力が空行だったら、ループの先頭に戻ってやり直し */
         if (token == NULL) {
             continue;
         }
-        
+
         /* 入力が"quit"だったら、ループを抜けてプログラムを終了させる */
         if (strcmp(token, "quit") == 0) {
             printf("マイクロDBMSを終了します。\n\n");
             break;
         }
-        
+
         /* 最初のトークンが何かによって、呼び出す関数を決める */
         if (strcmp(token, "create") == 0) {
             callCreateTable();
@@ -912,7 +912,7 @@ int main()
             printf("もう一度入力し直してください。\n\n");
         }
     }
-    
+
     /* 各モジュールの終了処理 */
     finalizeDataManipModule();
     finalizeDataDefModule();

@@ -39,7 +39,7 @@ static void insertLine(int n, int m){
 static void printTableHeader(TableInfo *tableInfo, FieldList *fieldList){
     int i, j;
     int isIncluded = 0;
-    
+
     /*表ヘッダの出力*/
     if(fieldList == NULL){
         insertLine(tableInfo->numField, COLUMN_WIDTH);
@@ -49,7 +49,7 @@ static void printTableHeader(TableInfo *tableInfo, FieldList *fieldList){
     printf("|");
 
     for (i = 0; i < tableInfo->numField; i++) {
-        
+
         if(fieldList != NULL){
             for(j=0; j < fieldList->numField; j++){
                 if(strcmp(fieldList->name[j], tableInfo->fieldInfo[i].name) == 0){
@@ -66,7 +66,7 @@ static void printTableHeader(TableInfo *tableInfo, FieldList *fieldList){
         if (isIncluded == 1) {
             printf("%10s |", tableInfo->fieldInfo[i].name);
         }
-        
+
     }
     printf("\n");
     /*罫線の挿入*/
@@ -94,48 +94,48 @@ void printTableData(char *tableName){
     int numRecordSlot;
     char *p, *q;
     RecordSlot recordSlot;
-    
+
     recordSet = (RecordSet*)malloc(sizeof(RecordSet));
-    
+
     sprintf(filename, "%s%s", tableName, DATA_FILE_EXT);
     file = openFile(filename);
-    
+
     numPage = getNumPages(filename);
-    
+
     /*テーブル情報の取得*/
     if((tableInfo = getTableInfo(tableName)) == NULL){
         return; //エラー処理
     }
-    
+
     /*表ヘッダの出力*/
     printTableHeader(tableInfo, NULL);
-    
+
     /* ページ数分だけ繰り返す */
     for (i=0; i<numPage; ++i) {
         readPage(file, i, page);
-        
+
         /*スロットの数*/
         memcpy(&numRecordSlot, page, sizeof(int));
-        
+
         p = page + sizeof(int);
-        
+
         /* スロットを見ていく */
         for (j=0; j<numRecordSlot; ++j) {
             int intValue;
             double doubleValue;
-            char stringValue[MAX_STRING];
+            char stringVal[MAX_STRING];
             int stringLen;
-            
+
             memcpy(&recordSlot.flag, p, sizeof(char));
             memcpy(&recordSlot.offset, p+sizeof(char), sizeof(int));
             memcpy(&recordSlot.size,p+sizeof(char)+sizeof(int), sizeof(int));
-            
+
             q = page + recordSlot.offset;
-            
+
             /* レコードがあったら表示 */
             if(recordSlot.flag == 1){
                 numRecord++;
-                
+
                 printf("|");
                 /*フィールドを見ていく*/
                 for (k = 0; k < tableInfo->numField; k++) {
@@ -156,8 +156,8 @@ void printTableData(char *tableName){
                             /* 文字列の時、表示 */
                             memcpy(&stringLen, q, sizeof(int));
                             q += sizeof(int);
-                            strcpy(stringValue, q);
-                            printf("%10s |", stringValue);
+                            strcpy(stringVal, q);
+                            printf("%10s |", stringVal);
                             q += stringLen + 1; // '\0'の分も進む
                             break;
                         default:
@@ -165,26 +165,26 @@ void printTableData(char *tableName){
                             freeTableInfo(tableInfo);
                             return ;
                     }
-                    
+
                 }/* レコードの読み込み終わり */
-                
+
                 printf("\n");
             }
-            
-            
+
+
             /* 次のスロットを見る */
             p += sizeof(char) + sizeof(int) * 2;
         }/* スロット繰り返し */
-        
+
     }/*ページ繰り返し*/
-    
+
     if(numRecord > 0){
         insertLine(tableInfo->numField, COLUMN_WIDTH);
     }
     printf("%d rows in set\n", numRecord);
-    
+
     return;
-    
+
 }
 
 /*
@@ -197,32 +197,32 @@ void printRecordSet(char *tableName, RecordSet *recordSet, FieldList *fieldList)
     RecordData *record;
     TableInfo *tableInfo;
     int i,j;
-    
+
     /*テーブル情報の取得*/
     if((tableInfo = getTableInfo(tableName)) == NULL){
         return; //エラー処理
     }
-    
+
     /*表ヘッダの出力*/
     printTableHeader(tableInfo, fieldList);
-    
+
     record = recordSet->recordData;
     for (i=0; i<recordSet->numRecord; ++i) {
         printf("|");
-        
+
         for (j = 0; j < record->numField; j++) {
             switch (tableInfo->fieldInfo[j].dataType) {
                 case TYPE_INTEGER:
                     /* 整数の時、表示 */
-                    printf("%10d |", record->fieldData[j].intValue);
+                    printf("%10d |", record->fieldData[j].val.intVal);
                     break;
                 case TYPE_DOUBLE:
                     /* 浮動小数点の時、表示 */
-                    printf("%10f |", record->fieldData[j].doubleValue);
+                    printf("%10f |", record->fieldData[j].val.doubleVal);
                     break;
                 case TYPE_STRING:
                     /* 文字列の時、表示 */
-                    printf("%10s |", record->fieldData[j].stringValue);
+                    printf("%10s |", record->fieldData[j].val.stringVal);
                     break;
                 default:
                     /* ここにくることはないはず */
@@ -230,15 +230,15 @@ void printRecordSet(char *tableName, RecordSet *recordSet, FieldList *fieldList)
                     freeRecordSet(recordSet);
                     return ;
             }
-            
+
         }/* レコードの読み込み終わり */
-        
+
         /*次のrecordを読む */
         record = record->next;
-        
+
         printf("\n");
     }
-    
+
     /*罫線の挿入*/
     if(recordSet->numRecord > 0){
         if(fieldList == NULL){
@@ -246,7 +246,7 @@ void printRecordSet(char *tableName, RecordSet *recordSet, FieldList *fieldList)
         }else{
             insertLine(fieldList->numField, COLUMN_WIDTH);
         }    }
-    
+
     /* レコード数の表示 */
     printf("%d rows in set\n", recordSet->numRecord);
 }
@@ -263,24 +263,24 @@ void printRecordSet(char *tableName, RecordSet *recordSet, FieldList *fieldList)
 void printTableInfo(char *tableName){
     TableInfo *tableInfo;
     int i;
-    
+
     /* テーブル名を出力 */
     printf("\nTable %s\n", tableName);
-    
+
     /* テーブルの定義情報を取得する */
     if ((tableInfo = getTableInfo(tableName)) == NULL) {
         /* テーブル情報の取得に失敗したので、処理をやめて返る */
         return;
     }
-    
+
     /* フィールド数を出力 */
     printf("number of fields = %d\n", tableInfo->numField);
-    
+
     /* フィールド情報を読み取って出力 */
     for (i = 0; i < tableInfo->numField; i++) {
         /* フィールド名の出力 */
         printf("  field %d: name = %s, ", i + 1, tableInfo->fieldInfo[i].name);
-        
+
         /* データ型の出力 */
         printf("data type = ");
         switch (tableInfo->fieldInfo[i].dataType) {
@@ -297,9 +297,9 @@ void printTableInfo(char *tableName){
                 printf("unknown\n");
         }
     }
-    
+
     /* データ定義情報を解放する */
     freeTableInfo(tableInfo);
-    
+
     return;
 }
