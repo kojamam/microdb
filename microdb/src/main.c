@@ -48,17 +48,28 @@ static void setInputString(char *string)
             char *quote;
             quote = p;
             *q++ = *p++;
+            int endWhile = 0;
 
-            /* 閉じる引用符(または文字列の最後)までコピーする */
-            while (*p != *quote && *p != '\0') {
+            
+            /* 閉じる引用符(または文字列の最後)まで読み飛ばす */
+            while (*p != '\0') {
+                if(*p == '\\' && *(p+1) == *quote){
+                    /* \' のときはエスケープされているので飛ばす */
+                    *q++ = *p++;
+                    *q++ = *p++;
+                }else if(*p == *quote && *(p+1) != *quote){
+                    /* 'の次に違う文字が着てたら読み込み終了 */
+                    *q++ = *p++;
+                    endWhile = 1;
+                    break;
+                }
                 *q++ = *p++;
             }
-
-            /* 閉じる引用符自体もコピーする */
-            if (*p == *quote) {
-                *q++ = *p++;
+            
+            if (endWhile == 0) {
+                continue;
             }
-            continue;
+
         }
 
         /* 区切り記号の場合には、その前後に空白文字を入れる */
@@ -90,7 +101,12 @@ static char *getNextToken()
 {
     char *start;
     char *end;
+    char *token;
+    int length = 0;
     char *p;
+    
+    /* トークン保存用のメモリを確保 */
+    token = (char*)malloc(sizeof(char)*MAX_INPUT);
 
     /* 空白文字が複数続いていたら、その分nextPositionを移動させる */
     while (*nextPosition == ' ') {
@@ -106,36 +122,46 @@ static char *getNextToken()
     /* nextPositionの位置以降で、最初に見つかる空白文字の場所を探す */
     p = nextPosition;
     while (*p != ' ' && *p != '\0') {
+        int endWhile = 0;
         /* 引用符の場合には、次の引用符まで読み飛ばす */
         if (*p == '\'' || *p == '"') {
             char *quote;
             quote = p;
-            p++;
+            token[length++] = *p++;
 
             /* 閉じる引用符(または文字列の最後)まで読み飛ばす */
-            while (*p != *quote && *p != '\0') {
-                p++;
+            while (*p != '\0') {
+                if(*p == '\\' && *(p+1) == *quote){
+                    /* \' のときはエスケープされているので飛ばす */
+                    token[length++] = *(p+1);
+                    p += 2;
+                }else if(*p == *quote && *(p+1) != *quote){
+                    /* 'の次に違う文字が着てたら読み込み終了 */
+                    token[length++] = *p++;
+                    endWhile = 1;
+                    break;
+                }
+                token[length++] = *p++;
             }
 
-            /* 閉じる引用符自体も読み飛ばす */
-            if (*p == *quote) {
-                p++;
+            if (endWhile == 1) {
+                break;
             }
         } else {
-            p++;
+            token[length++] = *p++;
         }
 
     }
     end = p;
 
     /*
-     * 空白文字を終端文字で置き換えるとともに、
+     * tokenの末尾に終端文字を挿入するとともに、
      * 次回のgetNextToken()の呼び出しのために
      * nextPositionをその次の文字に移動する
      */
     if (*end != '\0') {
-        *end = '\0';
-        nextPosition = end + 1;
+        token[length] = '\0';
+        nextPosition = end;
     } else {
         /*
          * (*end == '\0')の場合は文字列の最後まで解析が終わっているので、
@@ -145,8 +171,8 @@ static char *getNextToken()
         nextPosition = end;
     }
 
-    /* 字句の先頭番地を返す */
-    return start;
+    /* tokenを返す */
+    return token;
 }
 
 /*
