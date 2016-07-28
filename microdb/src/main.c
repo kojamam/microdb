@@ -220,7 +220,7 @@ void callCreateTable()
             tableInfo.fieldInfo[numField].dataType = TYPE_INTEGER;
         }else if(strcmp(token, "string") == 0){
             tableInfo.fieldInfo[numField].dataType = TYPE_STRING;
-        }else if(strcmp(token, "double")){
+        }else if(strcmp(token, "double") == 0){
             tableInfo.fieldInfo[numField].dataType = TYPE_DOUBLE;
         }else{
             tableInfo.fieldInfo[numField].dataType = TYPE_UNKNOWN;
