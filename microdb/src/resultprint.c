@@ -140,7 +140,7 @@ void printTableData(char *tableName){
                 /*フィールドを見ていく*/
                 for (k = 0; k < tableInfo->numField; k++) {
                     switch (tableInfo->fieldInfo[k].dataType) {
-                        case TYPE_INTEGER:
+                        case TYPE_INT:
                             /* 整数の時、表示 */
                             memcpy(&intValue, q, sizeof(int));
                             printf("%10d |", intValue);
@@ -152,7 +152,7 @@ void printTableData(char *tableName){
                             printf("%10f |", doubleValue);
                             q += sizeof(double);
                             break;
-                        case TYPE_STRING:
+                        case TYPE_VARCHAR:
                             /* 文字列の時、表示 */
                             memcpy(&stringLen, q, sizeof(int));
                             q += sizeof(int);
@@ -212,7 +212,7 @@ void printRecordSet(char *tableName, RecordSet *recordSet, FieldList *fieldList)
 
         for (j = 0; j < record->numField; j++) {
             switch (tableInfo->fieldInfo[j].dataType) {
-                case TYPE_INTEGER:
+                case TYPE_INT:
                     /* 整数の時、表示 */
                     printf("%10d |", record->fieldData[j].val.intVal);
                     break;
@@ -220,7 +220,7 @@ void printRecordSet(char *tableName, RecordSet *recordSet, FieldList *fieldList)
                     /* 浮動小数点の時、表示 */
                     printf("%10f |", record->fieldData[j].val.doubleVal);
                     break;
-                case TYPE_STRING:
+                case TYPE_VARCHAR:
                     /* 文字列の時、表示 */
                     printf("%10s |", record->fieldData[j].val.stringVal);
                     break;
@@ -284,14 +284,14 @@ void printTableInfo(char *tableName){
         /* データ型の出力 */
         printf("data type = ");
         switch (tableInfo->fieldInfo[i].dataType) {
-            case TYPE_INTEGER:
-                printf("integer\n");
+            case TYPE_INT:
+                printf("int\n");
                 break;
             case TYPE_DOUBLE:
                 printf("double\n");
                 break;
-            case TYPE_STRING:
-                printf("string\n");
+            case TYPE_VARCHAR:
+                printf("varchar\n");
                 break;
             default:
                 printf("unknown\n");

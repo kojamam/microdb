@@ -47,19 +47,19 @@ int main(int argc, char **argv)
     i = 0;
 
     strcpy(tableInfo.fieldInfo[i].name, "id");
-    tableInfo.fieldInfo[i].dataType = TYPE_STRING;
+    tableInfo.fieldInfo[i].dataType = TYPE_VARCHAR;
     i++;
 
     strcpy(tableInfo.fieldInfo[i].name, "name");
-    tableInfo.fieldInfo[i].dataType = TYPE_STRING;
+    tableInfo.fieldInfo[i].dataType = TYPE_VARCHAR;
     i++;
 
     strcpy(tableInfo.fieldInfo[i].name, "age");
-    tableInfo.fieldInfo[i].dataType = TYPE_INTEGER;
+    tableInfo.fieldInfo[i].dataType = TYPE_INT;
     i++;
 
     strcpy(tableInfo.fieldInfo[i].name, "address");
-    tableInfo.fieldInfo[i].dataType = TYPE_STRING;
+    tableInfo.fieldInfo[i].dataType = TYPE_VARCHAR;
     i++;
 
     tableInfo.numField = i;
@@ -89,27 +89,27 @@ int main(int argc, char **argv)
     i = 0;
 
     strcpy(tableInfo.fieldInfo[i].name, "id");
-    tableInfo.fieldInfo[i].dataType = TYPE_STRING;
+    tableInfo.fieldInfo[i].dataType = TYPE_VARCHAR;
     i++;
 
     strcpy(tableInfo.fieldInfo[i].name, "name");
-    tableInfo.fieldInfo[i].dataType = TYPE_STRING;
+    tableInfo.fieldInfo[i].dataType = TYPE_VARCHAR;
     i++;
 
     strcpy(tableInfo.fieldInfo[i].name, "title");
-    tableInfo.fieldInfo[i].dataType = TYPE_STRING;
+    tableInfo.fieldInfo[i].dataType = TYPE_VARCHAR;
     i++;
 
     strcpy(tableInfo.fieldInfo[i].name, "age");
-    tableInfo.fieldInfo[i].dataType = TYPE_INTEGER;
+    tableInfo.fieldInfo[i].dataType = TYPE_INT;
     i++;
 
     strcpy(tableInfo.fieldInfo[i].name, "address");
-    tableInfo.fieldInfo[i].dataType = TYPE_STRING;
+    tableInfo.fieldInfo[i].dataType = TYPE_VARCHAR;
     i++;
 
     strcpy(tableInfo.fieldInfo[i].name, "class");
-    tableInfo.fieldInfo[i].dataType = TYPE_INTEGER;
+    tableInfo.fieldInfo[i].dataType = TYPE_INT;
     i++;
 
     tableInfo.numField = i;

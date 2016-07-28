@@ -55,13 +55,13 @@ static int getRecordSize(RecordData *recordData, TableInfo *tableInfo){
         /* INT型ならtotalにsizeof(int)を加算 */
         /* STRING型ならtotalにfieldDataのstrlen+1を加算 */
         switch (tableInfo->fieldInfo[i].dataType) {
-            case TYPE_INTEGER:
+            case TYPE_INT:
                 total += sizeof(int);
                 break;
             case TYPE_DOUBLE:
                 total += sizeof(double);
                 break;
-            case TYPE_STRING:
+            case TYPE_VARCHAR:
                 /* stlen +文字数格納のためのint + null文字 */
                 total += strlen(recordData->fieldData[i].val.stringVal) + sizeof(int) + 1;
                 break;
@@ -108,7 +108,7 @@ static char* createRecordString(TableInfo *tableInfo, RecordData *recordData, in
     for (i = 0; i < tableInfo->numField; i++) {
         int stringLen;
         switch (tableInfo->fieldInfo[i].dataType) {
-            case TYPE_INTEGER:
+            case TYPE_INT:
                 /* 整数の時、そのままコピーしてポインタを進める */
                 memcpy(p, &recordData->fieldData[i].val.intVal, sizeof(int));
                 p += sizeof(int);
@@ -118,7 +118,7 @@ static char* createRecordString(TableInfo *tableInfo, RecordData *recordData, in
                 memcpy(p, &recordData->fieldData[i].val.doubleVal, sizeof(double));
                 p += sizeof(double);
                 break;
-            case TYPE_STRING:
+            case TYPE_VARCHAR:
                 /* 文字列の時、文字列の長さを先頭に格納してから文字列を格納 */
                 stringLen = (int)strlen(recordData->fieldData[i].val.stringVal);
                 memcpy(p, &stringLen, sizeof(int));
@@ -397,7 +397,7 @@ static Result checkDuplication(RecordData *recordChecked, RecordSet *recordSet){
     for (i=0; i<recordSet->numRecord; ++i) {
         for (j=0; j<record->numField; ++j) {
             switch (record->fieldData[j].dataType) {
-                case TYPE_INTEGER:
+                case TYPE_INT:
                     /* 整数の時、比較して違っていたら次へ */
                     if(record->fieldData[j].val.intVal == recordChecked->fieldData[j].val.intVal){
                         fieldFlag = SAME;
@@ -413,7 +413,7 @@ static Result checkDuplication(RecordData *recordChecked, RecordSet *recordSet){
                         fieldFlag = DIFFERNT;
                     }
                     break;
-                case TYPE_STRING:
+                case TYPE_VARCHAR:
                     /* 文字列の時、比較して違っていたらOKを返す */
                     if (strcmp(record->fieldData[j].val.stringVal, recordChecked->fieldData[j].val.stringVal) == 0) {
                         fieldFlag = SAME;
@@ -466,13 +466,13 @@ static Result checkCondition(RecordData *recordData, Condition *condition){
     for(i=0; i<recordData->numField; ++i){
         if(strcmp(recordData->fieldData[i].name, condition->name) == 0){
             switch (recordData->fieldData[i].dataType) {
-                case TYPE_INTEGER:
+                case TYPE_INT:
                     diff = recordData->fieldData[i].val.intVal - condition->val.intVal;
                     break;
                 case TYPE_DOUBLE:
                     diff = recordData->fieldData[i].val.doubleVal - condition->val.doubleVal;
                     break;
-                case TYPE_STRING:
+                case TYPE_VARCHAR:
                     diff = strcmp(recordData->fieldData[i].val.stringVal, condition->val.stringVal);
                     break;
                 default:
@@ -580,7 +580,7 @@ RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condit
                         strcpy(recordData1->fieldData[l].name, tableInfo->fieldInfo[k].name);
                         recordData1->fieldData[l].dataType = tableInfo->fieldInfo[k].dataType;
                         switch (tableInfo->fieldInfo[k].dataType) {
-                            case TYPE_INTEGER:
+                            case TYPE_INT:
                                 /* 整数の時、そのままコピー */
                                 memcpy(&recordData1->fieldData[l].val.intVal, q, sizeof(int));
                                 break;
@@ -588,7 +588,7 @@ RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condit
                                 /* 小数の時、そのままコピー */
                                 memcpy(&recordData1->fieldData[l].val.doubleVal, q, sizeof(double));
                                 break;
-                            case TYPE_STRING:
+                            case TYPE_VARCHAR:
                                 /* 文字列の時、文字列長を飛ばして文字列を格納 */
                                 strcpy(recordData1->fieldData[l].val.stringVal, q+sizeof(int));
                                 break;
@@ -621,7 +621,7 @@ RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condit
                         recordData2->fieldData[m].dataType = tableInfo->fieldInfo[k].dataType;
                     }
                     switch (tableInfo->fieldInfo[k].dataType) {
-                        case TYPE_INTEGER:
+                        case TYPE_INT:
                             /* 整数の時、そのままコピーしてポインタを進める */
                             if(isIncluded){
                                 memcpy(&recordData2->fieldData[m++].val.intVal, q, sizeof(int));
@@ -635,7 +635,7 @@ RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condit
                             }
                             q += sizeof(double);
                             break;
-                        case TYPE_STRING:
+                        case TYPE_VARCHAR:
                             /* 文字列の時、文字列の長さを先頭に格納してから文字列を格納 */
                             memcpy(&stringLen, q, sizeof(int));
                             q += sizeof(int);
@@ -777,7 +777,7 @@ Result deleteRecord(char *tableName, Condition *condition){
                     strcpy(recordData->fieldData[k].name, tableInfo->fieldInfo[k].name);
                     recordData->fieldData[k].dataType = tableInfo->fieldInfo[k].dataType;
                     switch (tableInfo->fieldInfo[k].dataType) {
-                        case TYPE_INTEGER:
+                        case TYPE_INT:
                             /* 整数の時、そのままコピーしてポインタを進める */
                             memcpy(&recordData->fieldData[k].val.intVal, q, sizeof(int));
                             q += sizeof(int);
@@ -787,7 +787,7 @@ Result deleteRecord(char *tableName, Condition *condition){
                             memcpy(&recordData->fieldData[k].val.doubleVal, q, sizeof(double));
                             q += sizeof(double);
                             break;
-                        case TYPE_STRING:
+                        case TYPE_VARCHAR:
                             /* 文字列の時、文字列の長さを先頭に格納してから文字列を格納 */
                             memcpy(&stringLen, q, sizeof(int));
                             q += sizeof(int);

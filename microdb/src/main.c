@@ -217,9 +217,9 @@ void callCreateTable()
 
         /* データ型を配列に設定 */
         if(strcmp(token, "int") == 0){
-            tableInfo.fieldInfo[numField].dataType = TYPE_INTEGER;
-        }else if(strcmp(token, "string") == 0){
-            tableInfo.fieldInfo[numField].dataType = TYPE_STRING;
+            tableInfo.fieldInfo[numField].dataType = TYPE_INT;
+        }else if(strcmp(token, "varchar") == 0){
+            tableInfo.fieldInfo[numField].dataType = TYPE_VARCHAR;
         }else if(strcmp(token, "double") == 0){
             tableInfo.fieldInfo[numField].dataType = TYPE_DOUBLE;
         }else{
@@ -367,13 +367,13 @@ void callInsertRecord()
             return;
         }
 
-        if (tableInfo->fieldInfo[i].dataType == TYPE_INTEGER) {
+        if (tableInfo->fieldInfo[i].dataType == TYPE_INT) {
             /* トークンの文字列を整数値に変換して設定 */
             recordData.fieldData[i].val.intVal = atoi(token);
         }else if (tableInfo->fieldInfo[i].dataType == TYPE_DOUBLE){
             /* トークンの文字列を少数値に変換して設定 */
             recordData.fieldData[i].val.doubleVal = atof(token);
-        }else if(tableInfo->fieldInfo[i].dataType == TYPE_STRING){
+        }else if(tableInfo->fieldInfo[i].dataType == TYPE_VARCHAR){
             char stringVal[MAX_STRING];
             /* はじめが'であるかをチェック */
             if(token == NULL || token[0] != '\''){
@@ -608,13 +608,13 @@ void callSelectRecord()
         }
 
         /* 条件式の値を構造体に設定 */
-        if (cond.dataType == TYPE_INTEGER) {
+        if (cond.dataType == TYPE_INT) {
             /* トークンの文字列を整数値に変換して設定 */
             cond.val.intVal = atoi(token);
         }else if (cond.dataType == TYPE_DOUBLE){
             /* トークンの文字列を小数値に変換して設定 */
             cond.val.doubleVal = atof(token);
-        }else if (cond.dataType == TYPE_STRING) {
+        }else if (cond.dataType == TYPE_VARCHAR) {
             char stringVal[MAX_STRING];
             /* はじめが'であるかをチェック */
             if(token == NULL || token[0] != '\''){
@@ -787,13 +787,13 @@ void callDeleteRecord(){
     }
 
     /* 条件式の値を構造体に設定 */
-    if (cond.dataType == TYPE_INTEGER) {
+    if (cond.dataType == TYPE_INT) {
         /* トークンの文字列を整数値に変換して設定 */
         cond.val.intVal = atoi(token);
     }else if (cond.dataType == TYPE_DOUBLE){
         /* トークンの文字列を小数に変換して設定 */
         cond.val.intVal = atof(token);
-    }else if (cond.dataType == TYPE_STRING) {
+    }else if (cond.dataType == TYPE_VARCHAR) {
         char stringVal[MAX_STRING];
         /* はじめが'であるかをチェック */
         if(token == NULL || token[0] != '\''){

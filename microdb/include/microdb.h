@@ -54,9 +54,9 @@ struct File {
 typedef enum DataType DataType;
 enum DataType {
     TYPE_UNKNOWN = 0,			/* データ型不明 */
-    TYPE_INTEGER = 1,			/* 整数型 */
+    TYPE_INT = 1,			/* 整数型 */
     TYPE_DOUBLE = 2,             /* 倍精度浮動小数点型 */
-    TYPE_STRING = 3			/* 文字列型 */
+    TYPE_VARCHAR = 3			/* 文字列型 */
 };
 
 /*
@@ -84,7 +84,7 @@ typedef union FieldValue FieldValue;
 union FieldValue {
     int intVal;                 /* integer型の場合の値 */
     double doubleVal;           /* double型の場合の値 */
-    char stringVal[MAX_STRING]; /* string型の場合の値 */
+    char stringVal[MAX_STRING]; /* varchar型の場合の値 */
 };
 
 /*
