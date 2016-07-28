@@ -435,10 +435,20 @@ void callSelectRecord()
     char *token;
     char *tableName;
     TableInfo *tableInfo;
+    FieldList fieldList;
     Condition cond;
     RecordSet *recordSet;
     int i, numField;
     
+    /*fieldListを初期化*/
+    fieldList.numField = -1;
+    
+    /*conditonを初期化*/
+    strcpy(cond.name, "");
+    cond.dataType = TYPE_UNKNOWN;
+    cond.operator = OPR_UNKNOWN;
+    strcpy(cond.stringValue, "");
+    cond.distinct = NOT_DISTINCT;
     
     /* selectの次のトークンを読み込み、それが"*"かどうかをチェック */
     token = getNextToken();
@@ -460,16 +470,10 @@ void callSelectRecord()
         for(;;) {
             
             /* フィールド名を配列に設定 */
-            strcpy(fieleInfo.name[numField], token);
+            strcpy(fieldList.name[numField], token);
             
             /* フィールド数をカウントする */
             numField++;
-            
-            /* フィールド数が上限を超えていたらエラー */
-            if (numField > tableInfo->numField) {
-                printf("フィールド数が多すぎます。\n");
-                return;
-            }
             
             /* 次のトークンの読み込み */
             token = getNextToken();
@@ -487,6 +491,8 @@ void callSelectRecord()
                 return;
             }
         }
+
+        fieldList.numField = numField;
 
     }else{
         /* 次のトークンを読み込み、それが"from"かどうかをチェック */
@@ -517,7 +523,7 @@ void callSelectRecord()
     /* "select * from TABLENAME" のように条件句がない時 */
     if(token == NULL){
         /*selectRecoredの呼び出し*/
-        if ((recordSet = selectRecord(tableName, NULL,  NULL)) == NULL) {
+        if ((recordSet = selectRecord(tableName, &fieldList, &cond)) == NULL) {
             fprintf(stderr, "Cannot select records.\n");
             return;
         }
@@ -628,15 +634,14 @@ void callSelectRecord()
         }
 
         /*selectRecoredの呼び出し*/
-        if ((recordSet = selectRecord(tableName, NULL, &cond)) == NULL) {
+        if ((recordSet = selectRecord(tableName, &fieldList, &cond)) == NULL) {
             fprintf(stderr, "Cannot select records.\n");
             return;
         }
     }
     
     /* 結果を表示 */
-    printRecordSet(tableName, recordSet);
-    
+    printRecordSet(tableName, recordSet, &fieldList);
     /* 結果を解放 */
     freeRecordSet(recordSet);
 

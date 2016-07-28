@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-
+#include <assert.h>
 /*
  * Result -- 成功/失敗を返す返り値
  */

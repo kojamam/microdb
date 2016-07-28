@@ -230,9 +230,11 @@ Result test2()
     condition.operator = OPR_GREATER_THAN;
     condition.intValue = 17;
     condition.distinct = NOT_DISTINCT;
+    
+    fieldList.numField = -1;
 
 
-    if ((recordSet = selectRecord(TABLE_NAME, NULL, &condition)) == NULL) {
+    if ((recordSet = selectRecord(TABLE_NAME, &fieldList, &condition)) == NULL) {
         fprintf(stderr, "Cannot select records.\n");
         return NG;
     }
@@ -254,7 +256,9 @@ Result test2()
     condition.intValue = 17;
     condition.distinct = DISTINCT;
     
-    if ((recordSet = selectRecord(TABLE_NAME, NULL, &condition)) == NULL) {
+    fieldList.numField = -1;
+    
+    if ((recordSet = selectRecord(TABLE_NAME, &fieldList, &condition)) == NULL) {
         fprintf(stderr, "Cannot select records.\n");
         return NG;
     }
@@ -275,8 +279,10 @@ Result test2()
     condition.operator = OPR_NOT_EQUAL;
     strcpy(condition.stringValue, "Florida");
     condition.distinct = NOT_DISTINCT;
+    
+    fieldList.numField = -1;
 
-    if ((recordSet = selectRecord(TABLE_NAME, NULL, &condition)) == NULL) {
+    if ((recordSet = selectRecord(TABLE_NAME, &fieldList, &condition)) == NULL) {
         fprintf(stderr, "Cannot select records.\n");
         return NG;
     }
@@ -290,16 +296,17 @@ Result test2()
     
     /*
      * 以下の検索を実行
-     * select distinct name from TABLE_NAME'
+     * select name from TABLE_NAME'
      */
-    strcpy(fieldList.name[0], "name");
-    fieldList.numField = 1;
-    
     strcpy(condition.name, "");
     condition.dataType = TYPE_UNKNOWN;
     condition.operator = OPR_UNKNOWN;
     strcpy(condition.stringValue, "");
-    condition.distinct = DISTINCT;
+    condition.distinct = NOT_DISTINCT;
+    
+    strcpy(fieldList.name[0], "name");
+    fieldList.numField = 1;
+    
     
     
     if ((recordSet = selectRecord(TABLE_NAME, &fieldList, &condition)) == NULL) {
@@ -308,14 +315,21 @@ Result test2()
     }
     
     /* 結果を表示 */
-    printf("select distinct name from TABLE_NAME\n");
+    printf("select name from TABLE_NAME\n");
     printRecordSet(TABLE_NAME, recordSet, &fieldList);
     
     /*
      * 以下の検索を実行
-     * select name from TABLE_NAME where address != 'Florida'
+     * select name address from TABLE_NAME where address != 'Florida'
      */
     
+    strcpy(condition.name, "address");
+    condition.dataType = TYPE_STRING;
+    condition.operator = OPR_NOT_EQUAL;
+    strcpy(condition.stringValue, "Florida");
+    condition.distinct = NOT_DISTINCT;
+
+    strcpy(fieldList.name[0], "name");
     strcpy(fieldList.name[1], "address");
     fieldList.numField = 2;
     

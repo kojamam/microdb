@@ -442,18 +442,10 @@ static Result checkDuplication(RecordData *recordChecked, RecordSet *recordSet){
 * 返り値:
 *	レコードrecordが条件conditionを満足すればOK、満足しなければNGを返す
 */
-static Result checkCondition(RecordData *recordData, Condition *condition, RecordSet *recordSet){
+static Result checkCondition(RecordData *recordData, Condition *condition){
     int i;
     OperatorType opType = condition->operator;
     int diff;
-    
-    /*DISTINCTフラグが立っている時重複チェック*/
-    if (condition->distinct == DISTINCT) {
-        /*重複してたらNGを返す*/
-        if (checkDuplication(recordData, recordSet) ==  NG) {
-            return NG;
-        }
-    }
 
     for(i=0; i<recordData->numField; ++i){
         if(strcmp(recordData->fieldData[i].name, condition->name) == 0){
@@ -499,6 +491,10 @@ static Result checkCondition(RecordData *recordData, Condition *condition, Recor
 *	必ずfreeRecordSetで解放すること。
 */
 RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condition){
+    assert(strcmp(tableName, ""));
+    assert(condition != NULL);
+    assert(fieldList != NULL);
+    
     RecordSet *recordSet;
     char filename[MAX_FILENAME];
     File *file;
@@ -583,7 +579,7 @@ RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condit
                     }
 
                     /* fieldListがあって、そのフィールドが存在するかを確認してisIncludedフラグを立てる */
-                    if(fieldList != NULL){
+                    if(fieldList->numField > 0){
                         for(n=0; n < fieldList->numField; n++){
                             if(strcmp(fieldList->name[n], tableInfo->fieldInfo[k].name) == 0){
                                 isIncluded = 1;
@@ -628,17 +624,22 @@ RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condit
                 
                 recordData2->numField = m;
 
-                /*条件を満足するかを確認して満たしていたらRecordSetの末尾に追加*/
-                if(condition == NULL || checkCondition(recordData1, condition, recordSet) == OK){
-                    recordSet->numRecord++;
-                    if(recordSet->recordData == NULL){
-                        recordSet->recordData = recordData2;
-                    }else{
-                        RecordData *tmpRecordData = recordSet->recordData;
-                        while (tmpRecordData->next != NULL) {
-                            tmpRecordData = tmpRecordData->next;
+                /*条件が無い時か、あって満足するかを確認して満たしていたら*/
+                if(strcmp(condition->name, "") == 0 || checkCondition(recordData1, condition) == OK){
+                    /*DISTINCTが無い時か、あって重複してないならRecordSetの末尾に追加*/
+                    if (condition->distinct == NOT_DISTINCT || checkDuplication(recordData2, recordSet) == OK) {
+                        recordSet->numRecord++;
+                        if(recordSet->recordData == NULL){
+                            recordSet->recordData = recordData2;
+                        }else{
+                            RecordData *tmpRecordData = recordSet->recordData;
+                            while (tmpRecordData->next != NULL) {
+                                tmpRecordData = tmpRecordData->next;
+                            }
+                            tmpRecordData->next = recordData2;
                         }
-                        tmpRecordData->next = recordData2;
+                    }else{
+                        free(recordData2);
                     }
                 }else{
                     free(recordData2);
@@ -767,7 +768,7 @@ Result deleteRecord(char *tableName, Condition *condition){
                 }/* レコードの読み込み終わり */
 
                 /*条件を満足するかを確認して満たしていたら削除 */
-                if(condition == NULL || checkCondition(recordData, condition, NULL) == OK){
+                if(condition == NULL || checkCondition(recordData, condition) == OK){
                     /* 0埋め */
                     memset(page+recordSlot.offset, 0, recordSlot.size);
                     /* スロットの更新*/
