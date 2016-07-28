@@ -94,6 +94,9 @@ void printTableData(char *tableName){
     int numRecordSlot;
     char *p, *q;
     RecordSlot recordSlot;
+    FieldList fieldList;
+    
+    fieldList.numField = 0;
 
     recordSet = (RecordSet*)malloc(sizeof(RecordSet));
 
@@ -108,7 +111,7 @@ void printTableData(char *tableName){
     }
 
     /*表ヘッダの出力*/
-    printTableHeader(tableInfo, NULL);
+    printTableHeader(tableInfo, &fieldList);
 
     /* ページ数分だけ繰り返す */
     for (i=0; i<numPage; ++i) {

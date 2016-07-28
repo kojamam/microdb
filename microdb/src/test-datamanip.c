@@ -271,7 +271,7 @@ Result test2()
 
     /* 結果を表示 */
     printf("select * from TABLE_NAME where age > 17\n");
-     printRecordSet(TABLE_NAME, recordSet, NULL);
+     printRecordSet(TABLE_NAME, recordSet, &fieldList);
 
     /* 結果を解放 */
     freeRecordSet(recordSet);
@@ -295,7 +295,7 @@ Result test2()
 
     /* 結果を表示 */
     printf("select distinct * from TABLE_NAME where age > 17\n");
-    printRecordSet(TABLE_NAME, recordSet, NULL);
+    printRecordSet(TABLE_NAME, recordSet, &fieldList);
 
     /* 結果を解放 */
     freeRecordSet(recordSet);
@@ -319,7 +319,7 @@ Result test2()
 
     /* 結果を表示 */
     printf("select * from TABLE_NAME where address != 'Florida'\n");
-    printRecordSet(TABLE_NAME, recordSet, NULL);
+    printRecordSet(TABLE_NAME, recordSet, &fieldList);
 
     /* 結果を解放 */
     freeRecordSet(recordSet);

@@ -9,6 +9,8 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <assert.h>
+#include "error.h"
+
 /*
  * Result -- 成功/失敗を返す返り値
  */
