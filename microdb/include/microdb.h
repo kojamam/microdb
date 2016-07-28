@@ -184,8 +184,6 @@ extern Result createTable(char *, TableInfo *);
 extern Result dropTable(char *);
 extern TableInfo *getTableInfo(char *);
 extern void freeTableInfo(TableInfo *);
-extern void printTableInfo(char *);
-
 
 /*
  * datamanip.cに定義されている関数群
@@ -204,3 +202,4 @@ extern Result deleteDataFile(char *);
  */
 extern void printTableData(char *);
 extern void printRecordSet(char *, RecordSet *, FieldList *);
+extern void printTableInfo(char *);

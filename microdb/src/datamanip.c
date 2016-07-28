@@ -504,7 +504,7 @@ RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condit
     char page[PAGE_SIZE];
     int numRecordSlot;
     char *p, *q;
-    RecordSlot recordSlot;
+    RecordSlot *recordSlot;
     int isIncluded = 0;
 
     recordSet = (RecordSet*)malloc(sizeof(RecordSet));
@@ -532,14 +532,12 @@ RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condit
 
         /* スロットを見ていく */
         for (j=0; j<numRecordSlot; ++j) {
-            memcpy(&recordSlot.flag, p, sizeof(char));
-            memcpy(&recordSlot.offset, p+sizeof(char), sizeof(int));
-            memcpy(&recordSlot.size,p+sizeof(char)+sizeof(int), sizeof(int));
+            recordSlot = readSlotFromPage(page, j);
 
-            q = page + recordSlot.offset;
+            q = page + recordSlot->offset;
 
             /* レコードがあったら読み込み */
-            if(recordSlot.flag == 1){
+            if(recordSlot->flag == 1){
                 RecordData *recordData1 = (RecordData*)malloc(sizeof(RecordData));
                 recordData1->numField = 1;
                 recordData1->next = NULL;
@@ -617,7 +615,9 @@ RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condit
                         default:
                             /* ここにくることはないはず */
                             freeTableInfo(tableInfo);
+                            free(recordData1);
                             free(recordData2);
+                            free(recordSlot);
                             return NULL;
                     }
                 }/* レコードの読み込み終わり */
@@ -645,6 +645,7 @@ RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condit
                     free(recordData2);
                 }
                 free(recordData1);
+                free(recordSlot);
             }/* レコード読み込みおわり */
 
             /* 次のスロットを見る */
@@ -699,6 +700,9 @@ void freeRecordSet(RecordSet *recordSet){
 */
 Result deleteRecord(char *tableName, Condition *condition){
 
+    assert(strcmp(tableName, "") != 0);
+    assert(condition != NULL);
+
     char filename[MAX_FILENAME];
     File *file;
     int numPage;
@@ -707,7 +711,7 @@ Result deleteRecord(char *tableName, Condition *condition){
     char page[PAGE_SIZE];
     int numRecordSlot;
     char *p, *q;
-    RecordSlot recordSlot;
+    RecordSlot *recordSlot;
 
 
     sprintf(filename, "%s%s", tableName, DATA_FILE_EXT);
@@ -731,14 +735,12 @@ Result deleteRecord(char *tableName, Condition *condition){
 
         /* スロットを見ていく */
         for (j=0; j<numRecordSlot; ++j) {
-            memcpy(&recordSlot.flag, p, sizeof(char));
-            memcpy(&recordSlot.offset, p+sizeof(char), sizeof(int));
-            memcpy(&recordSlot.size,p+sizeof(char)+sizeof(int), sizeof(int));
+            recordSlot = readSlotFromPage(page, j);
 
-            q = page + recordSlot.offset;
+            q = page + recordSlot->offset;
 
             /* レコードがあったら読み込み */
-            if(recordSlot.flag == 1){
+            if(recordSlot->flag == 1){
                 RecordData *recordData = (RecordData*)malloc(sizeof(RecordData));
                 recordData->numField = tableInfo->numField;
                 int stringLen;
@@ -768,14 +770,12 @@ Result deleteRecord(char *tableName, Condition *condition){
                 }/* レコードの読み込み終わり */
 
                 /*条件を満足するかを確認して満たしていたら削除 */
-                if(condition == NULL || checkCondition(recordData, condition) == OK){
+                if(strcmp(condition->name, "") == 0 || checkCondition(recordData, condition) == OK){
                     /* 0埋め */
-                    memset(page+recordSlot.offset, 0, recordSlot.size);
+                    memset(page+recordSlot->offset, 0, recordSlot->size);
                     /* スロットの更新*/
-                    recordSlot.flag = 0;
-                    memcpy(p, &recordSlot.flag, sizeof(char));
-                    memcpy(p+sizeof(char), &recordSlot.offset, sizeof(int));
-                    memcpy(p+sizeof(char)+sizeof(int), &recordSlot.size, sizeof(int));
+                    recordSlot->flag = 0;
+                    writeSlotToPage(page, recordSlot);
                 }/* TODO 隣のスロットと統合 */
                 free(recordData);
             }

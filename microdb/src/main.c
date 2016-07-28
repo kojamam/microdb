@@ -666,6 +666,13 @@ void callDeleteRecord(){
     Condition cond;
     int i;
     
+    /*conditionを初期化*/
+    strcpy(cond.name, "");
+    cond.dataType = TYPE_UNKNOWN;
+    cond.operator = OPR_UNKNOWN;
+    strcpy(cond.stringValue, "");
+    cond.intValue = 0;
+    
     /* deleteの次のトークンを読み込み、それが"from"かどうかをチェック */
     token = getNextToken();
     if (token == NULL || strcmp(token, "from") != 0) {
@@ -692,7 +699,7 @@ void callDeleteRecord(){
     token = getNextToken();
     /* "delete from TABLENAME" のように条件句がない時 */
     if(token == NULL){
-        deleteRecord(tableName, NULL);
+        deleteRecord(tableName, &cond);
         return;
     }
     

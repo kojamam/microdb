@@ -371,6 +371,7 @@ Result test3()
         return NG;
     }
 
+    printf("delete from TABLE_NAME where name != 'Mickey'\n");
     /* データを表示する */
     printTableData(TABLE_NAME);
     
@@ -380,11 +381,18 @@ Result test3()
      * 以下のクエリを実行
      * delete from TABLE_NAME 
      */
-    if (deleteRecord(TABLE_NAME, NULL) != OK) {
+    strcpy(condition.name, "");
+    condition.dataType = TYPE_UNKNOWN;
+    condition.operator = OPR_UNKNOWN;
+    strcpy(condition.stringValue, "");
+    condition.intValue = 0;
+    
+    if (deleteRecord(TABLE_NAME, &condition) != OK) {
         fprintf(stderr, "Cannot delete records.\n");
         return NG;
     }
 
+    printf("delete from TABLE_NAME\n");
     /* データを表示する */
     printTableData(TABLE_NAME);
 
