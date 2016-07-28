@@ -41,16 +41,16 @@ static void printTableHeader(TableInfo *tableInfo, FieldList *fieldList){
     int isIncluded = 0;
 
     /*表ヘッダの出力*/
-    if(fieldList == NULL){
-        insertLine(tableInfo->numField, COLUMN_WIDTH);
-    }else{
+    if(fieldList->numField > 0){
         insertLine(fieldList->numField, COLUMN_WIDTH);
+    }else{
+        insertLine(tableInfo->numField, COLUMN_WIDTH);
     }
     printf("|");
 
     for (i = 0; i < tableInfo->numField; i++) {
 
-        if(fieldList != NULL){
+        if(fieldList->numField > 0){
             for(j=0; j < fieldList->numField; j++){
                 if(strcmp(fieldList->name[j], tableInfo->fieldInfo[i].name) == 0){
                     isIncluded = 1;
@@ -70,10 +70,10 @@ static void printTableHeader(TableInfo *tableInfo, FieldList *fieldList){
     }
     printf("\n");
     /*罫線の挿入*/
-    if(fieldList == NULL){
-        insertLine(tableInfo->numField, COLUMN_WIDTH);
-    }else{
+    if(fieldList->numField > 0){
         insertLine(fieldList->numField, COLUMN_WIDTH);
+    }else{
+        insertLine(tableInfo->numField, COLUMN_WIDTH);
     }
 }
 
@@ -241,11 +241,12 @@ void printRecordSet(char *tableName, RecordSet *recordSet, FieldList *fieldList)
 
     /*罫線の挿入*/
     if(recordSet->numRecord > 0){
-        if(fieldList == NULL){
-            insertLine(tableInfo->numField, COLUMN_WIDTH);
-        }else{
+        if(fieldList->numField > 0){
             insertLine(fieldList->numField, COLUMN_WIDTH);
-        }    }
+        }else{
+            insertLine(tableInfo->numField, COLUMN_WIDTH);
+        }
+    }
 
     /* レコード数の表示 */
     printf("%d rows in set\n", recordSet->numRecord);
