@@ -407,7 +407,7 @@ static Result checkDuplication(RecordData *recordChecked, RecordSet *recordSet){
                     break;
                 case TYPE_DOUBLE:
                     /* 小数の時、比較して違っていたら次へ */
-                    if(record->fieldData[j].val.intVal == recordChecked->fieldData[j].val.doubleVal){
+                    if(record->fieldData[j].val.doubleVal == recordChecked->fieldData[j].val.doubleVal){
                         fieldFlag = SAME;
                     }else{
                         fieldFlag = DIFFERNT;
