@@ -214,7 +214,7 @@ void printRecordSet(char *tableName, RecordSet *recordSet, FieldList *fieldList)
         printf("|");
 
         for (j = 0; j < record->numField; j++) {
-            switch (tableInfo->fieldInfo[j].dataType) {
+            switch (record->fieldData[j].dataType) {
                 case TYPE_INT:
                     /* 整数の時、表示 */
                     printf("%10d |", record->fieldData[j].val.intVal);

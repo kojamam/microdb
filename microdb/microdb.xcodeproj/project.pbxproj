@@ -94,7 +94,7 @@
 		EBC974351CEC243E0091D221 /* test-datamanip */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "test-datamanip"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBC9743C1CEC24550091D221 /* datamanip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = datamanip.c; sourceTree = "<group>"; };
 		EBC9743E1CEC24640091D221 /* test-datamanip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "test-datamanip.c"; sourceTree = "<group>"; };
-		EBDA14151D4A33DD00DA333E /* error.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = error.h; sourceTree = "<group>"; };
+		EBDA14151D4A33DD00DA333E /* message.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = message.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,7 +158,7 @@
 			children = (
 				EB858CB21D39F05C00416A8B /* libreadline.tbd */,
 				EB4687BA1CE5B37D0076184D /* microdb.h */,
-				EBDA14151D4A33DD00DA333E /* error.h */,
+				EBDA14151D4A33DD00DA333E /* message.h */,
 			);
 			path = include;
 			sourceTree = "<group>";

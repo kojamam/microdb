@@ -10,17 +10,17 @@
 #include "../include/microdb.h"
 
 /*
- * MAX_INPUT -- 入力行の最大文字数
+ * MAX_QUERY -- 入力行の最大文字数
  */
-#define MAX_INPUT 256
+#define MAX_QUERY 256
 
 /*
  * inputString -- 字句解析中の文字列を収める配列
  *
- * 大きさを「3 * MAX_INPUT」とするのは、入力行のすべての文字が区切り記号でも
+ * 大きさを「3 * MAX_QUERY」とするのは、入力行のすべての文字が区切り記号でも
  * バッファオーバーフローを起こさないようにするため。
  */
-static char inputString[3 * MAX_INPUT];
+static char inputString[3 * MAX_QUERY];
 
 /*
  * nextPosition -- 字句解析中の場所
@@ -73,7 +73,7 @@ static void setInputString(char *string)
         }
 
         /* 区切り記号の場合には、その前後に空白文字を入れる */
-        if (*p == ',' || *p == '(' || *p == ')' || *p == '.') {
+        if (*p == ',' || *p == '(' || *p == ')') {
             *q++ = ' ';
             *q++ = *p++;
             *q++ = ' ';
@@ -106,7 +106,7 @@ static char *getNextToken()
     char *p;
     
     /* トークン保存用のメモリを確保 */
-    token = (char*)malloc(sizeof(char)*MAX_INPUT);
+    token = (char*)malloc(sizeof(char)*MAX_QUERY);
 
     /* 空白文字が複数続いていたら、その分nextPositionを移動させる */
     while (*nextPosition == ' ') {
@@ -198,14 +198,14 @@ void callCreateTable()
     token = getNextToken();
     if (token == NULL || strcmp(token, "table") != 0) {
         /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
     /* テーブル名を読み込む */
     if ((tableName = getNextToken()) == NULL) {
         /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
@@ -213,7 +213,7 @@ void callCreateTable()
     token = getNextToken();
     if (token == NULL || strcmp(token, "(") != 0) {
         /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
@@ -226,7 +226,7 @@ void callCreateTable()
         /* フィールド名の読み込み */
         if ((token = getNextToken()) == NULL) {
             /* 文法エラー */
-            printf("入力行に間違いがあります。\n");
+            printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
             return;
         }
 
@@ -257,7 +257,7 @@ void callCreateTable()
 
         /* フィールド数が上限を超えていたらエラー */
         if (numField > MAX_FIELD) {
-            printf("フィールド数が上限を超えています。\n");
+            printf("%s\n", systemMessage[SYS_MSG_TOO_MANY_FIELDS]);
             return;
         }
 
@@ -272,7 +272,7 @@ void callCreateTable()
             continue;
         } else {
             /* 文法エラー */
-            printf("入力行に間違いがあります。\n");
+            printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
             return;
         }
     }
@@ -281,10 +281,10 @@ void callCreateTable()
 
     /* createTableを呼び出し、テーブルを作成 */
     if (createTable(tableName, &tableInfo) == OK) {
-        printf("テーブルを作成しました。\n");
+        printf("%s\n", systemMessage[SYS_MSG_SUCCESS_CREATE]);
         printTableInfo(tableName);
     } else {
-        printf("テーブルの作成に失敗しました。\n");
+        fprintf(stderr, "%s\n", errorMessage[ERR_MSG_CREATE]);
     }
 }
 
@@ -309,22 +309,22 @@ void callDropTable()
     token = getNextToken();
     if (token == NULL || strcmp(token, "table") != 0) {
         /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
     /* テーブル名を読み込む */
     if ((tableName = getNextToken()) == NULL) {
         /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
-    /* createTableを呼び出し、テーブルを作成 */
+    /* dropTableを呼び出し、テーブルを作成 */
     if (dropTable(tableName) == OK) {
-        printf("テーブルを削除しました。\n");
+        printf("%s\n", systemMessage[SYS_MSG_SUCCESS_DROP]);
     } else {
-        printf("テーブルの削除に失敗しました。\n");
+        fprintf(stderr, "%s\n", errorMessage[ERR_MSG_DROP]);
     }
 }
 
@@ -352,21 +352,21 @@ void callInsertRecord()
     token = getNextToken();
     if (token == NULL || strcmp(token, "into") != 0) {
         /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
     /* テーブル名を読み込む */
     if ((tableName = getNextToken()) == NULL) {
         /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
     /* tableInfoを読み込み */
     if((tableInfo = getTableInfo(tableName)) == NULL){
         /* 文法エラー */
-        printf("指定したテーブルは存在しません。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
@@ -374,7 +374,7 @@ void callInsertRecord()
     token = getNextToken();
     if (token == NULL || strcmp(token, "(") != 0) {
         /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
@@ -389,22 +389,37 @@ void callInsertRecord()
         token = getNextToken();
         if (token == NULL || strcmp(token, ")") == 0) {
             /* 文法エラー */
-            printf("入力行に間違いがあります。\n");
+            printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
             return;
         }
 
+        char *endp;
+        long inputIntNum;
+        double inputDoubleNum;
         if (tableInfo->fieldInfo[i].dataType == TYPE_INT) {
-            /* トークンの文字列を整数値に変換して設定 */
-            recordData.fieldData[i].val.intVal = atoi(token);
+            /* トークンの文字列を整数値に変換して設定。変換できなければreturn;*/
+            inputIntNum = strtol(token, &endp, 10);
+            if(inputIntNum < INT_MIN || inputIntNum > INT_MAX || strcmp(endp, "") != 0){
+                printf("%s\n", systemMessage[SYS_MSG_INVALID_ARG]);
+                return;
+            }else{
+                recordData.fieldData[i].val.intVal = (int)inputIntNum;
+            }
         }else if (tableInfo->fieldInfo[i].dataType == TYPE_DOUBLE){
-            /* トークンの文字列を少数値に変換して設定 */
-            recordData.fieldData[i].val.doubleVal = atof(token);
+            /* トークンの文字列を小数値に変換して設定。変換出来なければreturn */
+            inputDoubleNum = strtod(token, &endp);
+            if(inputDoubleNum == -HUGE_VAL || inputDoubleNum == HUGE_VAL || strcmp(endp, "") != 0){
+                printf("%s\n", systemMessage[SYS_MSG_INVALID_ARG]);
+                return;
+            }else{
+                recordData.fieldData[i].val.doubleVal = inputDoubleNum;
+            }
         }else if(tableInfo->fieldInfo[i].dataType == TYPE_VARCHAR){
             char stringVal[MAX_STRING];
             /* はじめが'であるかをチェック */
             if(token == NULL || token[0] != '\''){
                 /* 文法エラー */
-                printf("条件式の指定に間違いがあります。\n");
+                printf("%s\n", systemMessage[SYS_MSG_INVALID_COND]);
                 return;
             }
 
@@ -418,13 +433,13 @@ void callInsertRecord()
                 stringVal[j-1] = '\0';
                 strcpy(recordData.fieldData[i].val.stringVal, stringVal);
             }else{
-                printf("値が不正です。\n");
+                printf("%s\n", systemMessage[SYS_MSG_INVALID_ARG]);
                 return;
             }
 
         } else {
             /* ここに来ることはないはず */
-            fprintf(stderr, "Unknown data type found.\n");
+            fprintf(stderr, "%s\n", errorMessage[ERR_MSG_UNKNOWN_TYPE]);
             exit(1);
         }
 
@@ -438,13 +453,16 @@ void callInsertRecord()
     /* トークンが")"かどうかをチェック */
     if (token == NULL || strcmp(token, ")") != 0) {
         /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
     recordData.next = NULL;
 
-    insertRecord(tableName, &recordData);
+    if(insertRecord(tableName, &recordData) !=  OK){
+        fprintf(stderr, "%s\n", errorMessage[ERR_MSG_INSERT]);
+        return;
+    }
 
 }
 
@@ -487,7 +505,7 @@ void callSelectRecord()
     token = getNextToken();
     if (token == NULL) {
         /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
@@ -520,7 +538,7 @@ void callSelectRecord()
                 continue;
             } else {
                 /* 文法エラー */
-                printf("入力行に間違いがあります。\n");
+                printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
                 return;
             }
         }
@@ -532,7 +550,7 @@ void callSelectRecord()
         token = getNextToken();
         if (token == NULL || strcmp(token, "from") != 0) {
             /* 文法エラー */
-            printf("入力行に間違いがあります。\n");
+            printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
             return;
         }
     }
@@ -540,14 +558,14 @@ void callSelectRecord()
     /* テーブル名を読み込む */
     if ((tableName = getNextToken()) == NULL) {
         /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
     /* tableInfoを読み込み */
     if((tableInfo = getTableInfo(tableName)) == NULL){
         /* 文法エラー */
-        printf("指定したテーブルは存在しません。\n");
+        printf("%s\n", systemMessage[SYS_MSG_TABLE_NOT_EXIST]);
         return;
     }
 
@@ -557,7 +575,7 @@ void callSelectRecord()
     if(token == NULL){
         /*selectRecoredの呼び出し*/
         if ((recordSet = selectRecord(tableName, &fieldList, &cond)) == NULL) {
-            fprintf(stderr, "Cannot select records.\n");
+            fprintf(stderr, "%s\n", errorMessage[ERR_MSG_SELECT]);
             return;
         }
     }else{
@@ -565,14 +583,14 @@ void callSelectRecord()
         /* それが"where"かどうかをチェック */
         if (strcmp(token, "where") != 0) {
             /* 文法エラー */
-            printf("入力行に間違いがあります。\n");
+            printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
             return;
         }
 
         /* 条件式のフィールド名を読み込む */
         if ((token = getNextToken()) == NULL) {
             /* 文法エラー */
-            printf("入力行に間違いがあります。\n");
+            printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
 
             /* 不要になったメモリ領域を解放する */
             freeTableInfo(tableInfo);
@@ -596,14 +614,14 @@ void callSelectRecord()
 
         /* フィールドのデータ型がわからなければ、文法エラー */
         if (cond.dataType == TYPE_UNKNOWN) {
-            printf("指定したフィールドが存在しません。\n");
+            printf("%s\n", systemMessage[SYS_MSG_FIELD_NOT_EXIST]);
             return;
         }
 
         /* 条件式の比較演算子を読み込む */
         if ((token = getNextToken()) == NULL) {
             /* 文法エラー */
-            printf("条件式の指定に間違いがあります。\n");
+            printf("%s\n", systemMessage[SYS_MSG_INVALID_COND]);
             return;
         }
 
@@ -622,14 +640,14 @@ void callSelectRecord()
             cond.operator = OPR_OR_LESS_THAN;
         }else{
             /* 文法エラー */
-            printf("条件式の指定に間違いがあります。\n");
+            printf("%s\n", systemMessage[SYS_MSG_INVALID_COND]);
             return;
         }
 
         /* 条件式の値を読み込む */
         if ((token = getNextToken()) == NULL) {
             /* 文法エラー */
-            printf("条件式の指定に間違いがあります。\n");
+            printf("%s\n", systemMessage[SYS_MSG_INVALID_COND]);
             return;
         }
 
@@ -645,7 +663,7 @@ void callSelectRecord()
             /* はじめが'であるかをチェック */
             if(token == NULL || token[0] != '\''){
                 /* 文法エラー */
-                printf("条件式の指定に間違いがあります。\n");
+                printf("%s\n", systemMessage[SYS_MSG_INVALID_COND]);
                 return;
             }
 
@@ -659,19 +677,19 @@ void callSelectRecord()
                 stringVal[i-1] = '\0';
                 strcpy(cond.val.stringVal, stringVal);
             }else{
-                printf("条件式の指定に間違いがあります。\n");
+                printf("%s\n", systemMessage[SYS_MSG_INVALID_COND]);
                 return;
             }
 
         } else {
             /* ここに来ることはないはず */
-            fprintf(stderr, "Unknown data type found.\n");
+            fprintf(stderr, "%s\n", errorMessage[ERR_MSG_UNKNOWN_TYPE]);
             exit(1);
         }
 
         /*selectRecoredの呼び出し*/
         if ((recordSet = selectRecord(tableName, &fieldList, &cond)) == NULL) {
-            fprintf(stderr, "Cannot select records.\n");
+            fprintf(stderr, "%s\n", errorMessage[ERR_MSG_SELECT]);
             return;
         }
     }
@@ -715,21 +733,21 @@ void callDeleteRecord(){
     token = getNextToken();
     if (token == NULL || strcmp(token, "from") != 0) {
         /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
     /* テーブル名を読み込む */
     if ((tableName = getNextToken()) == NULL) {
         /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
     /* tableInfoを読み込み */
     if((tableInfo = getTableInfo(tableName)) == NULL){
         /* 文法エラー */
-        printf("指定したテーブルは存在しません。\n");
+        printf("%s\n", systemMessage[SYS_MSG_TABLE_NOT_EXIST]);
         return;
     }
 
@@ -737,21 +755,24 @@ void callDeleteRecord(){
     token = getNextToken();
     /* "delete from TABLENAME" のように条件句がない時 */
     if(token == NULL){
-        deleteRecord(tableName, &cond);
+        if(deleteRecord(tableName, &cond)){
+            fprintf(stderr, "%s\n", errorMessage[ERR_MSG_DELETE]);
+            return;
+        }
         return;
     }
 
     /* "where"かどうかをチェック */
     if (strcmp(token, "where") != 0) {
         /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
     /* 条件式のフィールド名を読み込む */
     if ((token = getNextToken()) == NULL) {
         /* 文法エラー */
-        printf("入力行に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
 
         /* 不要になったメモリ領域を解放する */
         freeTableInfo(tableInfo);
@@ -775,14 +796,14 @@ void callDeleteRecord(){
 
     /* フィールドのデータ型がわからなければ、文法エラー */
     if (cond.dataType == TYPE_UNKNOWN) {
-        printf("指定したフィールドが存在しません。\n");
+        printf("%s\n", systemMessage[SYS_MSG_FIELD_NOT_EXIST]);
         return;
     }
 
     /* 条件式の比較演算子を読み込む */
     if ((token = getNextToken()) == NULL) {
         /* 文法エラー */
-        printf("条件式の指定に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
         return;
     }
 
@@ -801,14 +822,14 @@ void callDeleteRecord(){
         cond.operator = OPR_OR_LESS_THAN;
     }else{
         /* 文法エラー */
-        printf("条件式の指定に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_COND]);
         return;
     }
 
     /* 条件式の値を読み込む */
     if ((token = getNextToken()) == NULL) {
         /* 文法エラー */
-        printf("条件式の指定に間違いがあります。\n");
+        printf("%s\n", systemMessage[SYS_MSG_INVALID_COND]);
         return;
     }
 
@@ -824,7 +845,7 @@ void callDeleteRecord(){
         /* はじめが'であるかをチェック */
         if(token == NULL || token[0] != '\''){
             /* 文法エラー */
-            printf("条件式の指定に間違いがあります。\n");
+            printf("%s\n", systemMessage[SYS_MSG_INVALID_COND]);
             return;
         }
 
@@ -838,20 +859,23 @@ void callDeleteRecord(){
             stringVal[i-1] = '\0';
             strcpy(cond.val.stringVal, stringVal);
         }else{
-            printf("条件式の指定に間違いがあります。\n");
+            printf("%s\n", systemMessage[SYS_MSG_INVALID_COND]);
             return;
         }
 
      } else {
          /* ここに来ることはないはず */
-         fprintf(stderr, "Unknown data type found.\n");
+         fprintf(stderr, "%s\n", errorMessage[ERR_MSG_UNKNOWN_TYPE]);
          exit(1);
      }
 
     /*distinct関係ないので*/
     cond.distinct = NOT_DISTINCT;
 
-    deleteRecord(tableName, &cond);
+    if(deleteRecord(tableName, &cond) != OK){
+        fprintf(stderr, "%s\n", errorMessage[ERR_MSG_DELETE]);
+        return;
+    }
 }
 
 /*
@@ -859,45 +883,45 @@ void callDeleteRecord(){
  */
 int main()
 {
-    char input[MAX_INPUT];
+    char input[MAX_QUERY];
     char *token;
     char *line;
 
     /* ファイルモジュールの初期化 */
     if (initializeFileModule() != OK) {
-        fprintf(stderr, "Cannot initialize file module.\n");
+        fprintf(stderr, "%s\n", errorMessage[ERR_MSG_INITIALIZE_FILE_MODULE]);
         exit(1);
     }
 
     /* データ定義ジュールの初期化 */
     if (initializeDataDefModule() != OK) {
-        fprintf(stderr, "Cannot initialize data definition module.\n");
+        fprintf(stderr, "%s\n", errorMessage[ERR_MSG_INITIALIZE_DATADEF_MODULE]);
         exit(1);
     }
 
     /* データ操作ジュールの初期化 */
     if (initializeDataManipModule() != OK) {
-        fprintf(stderr, "Cannot initialize data manipulation module.\n");
+        fprintf(stderr, "%s\n", errorMessage[ERR_MSG_INITIALIZE_DATAMANIP_MODULE]);
         exit(1);
     }
 
     /* ウェルカムメッセージを出力 */
-    printf("マイクロDBMSを起動しました。\n");
+    printf("%s\n", systemMessage[SYS_MSG_START]);
 
     /* 1行ずつ入力を読み込みながら、処理を行う */
     for(;;) {
         /* プロンプトを出力して、キーボード入力を1行読み込む */
-        printf("\nDDLまたはDMLを入力してください。\n");
+        printf("\n%s\n", systemMessage[SYS_MSG_PROMPT]);
         line = readline("> ");
 
         /* EOFになったら終了 */
         if (line == NULL) {
-            printf("マイクロDBMSを終了します。\n\n");
+            printf("%s\n\n", systemMessage[SYS_MSG_QUIT]);
             break;
         }
 
         /* 字句解析するために入力文字列を設定する */
-        strncpy(input, line, MAX_INPUT);
+        strncpy(input, line, MAX_QUERY);
         setInputString(input);
 
         /* 入力の履歴を保存する */
@@ -917,7 +941,7 @@ int main()
 
         /* 入力が"quit"だったら、ループを抜けてプログラムを終了させる */
         if (strcmp(token, "quit") == 0) {
-            printf("マイクロDBMSを終了します。\n\n");
+            printf("%s\n\n", systemMessage[SYS_MSG_QUIT]);
             break;
         }
 
@@ -934,8 +958,8 @@ int main()
             callDeleteRecord();
         } else {
             /* 入力に間違いがあった */
-            printf("入力に間違いがあります。\n");
-            printf("もう一度入力し直してください。\n\n");
+            printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
+            printf("%s\n\n", systemMessage[SYS_MSG_TRY_AGAIN]);
         }
     }
 
