@@ -36,8 +36,7 @@ static char *nextPosition;
  * 返り値:
  *	なし
  */
-static void setInputString(char *string)
-{
+static void setInputString(char *string){
     char *p = string;
     char *q = inputString;
 
@@ -97,8 +96,7 @@ static void setInputString(char *string)
  * 返り値:
  *	次の字句の先頭番地を返す。最後までたどり着いたらNULLを返す。
  */
-static char *getNextToken()
-{
+static char *getNextToken(){
     char *start;
     char *end;
     char *token;
@@ -187,8 +185,7 @@ static char *getNextToken()
  * create tableの書式:
  *	create table テーブル名 ( フィールド名 データ型, ... )
  */
-void callCreateTable()
-{
+void callCreateTable(){
     char *token;
     char *tableName;
     int numField;
@@ -300,8 +297,7 @@ void callCreateTable()
  * drop tableの書式:
  *	drop table テーブル名
  */
-void callDropTable()
-{
+void callDropTable(){
     char *token;
     char *tableName;
 
@@ -340,8 +336,7 @@ void callDropTable()
  * insertの書式:
  *	insert into テーブル名 values ( フィールド値 , ... )
  */
-void callInsertRecord()
-{
+void callInsertRecord(){
     char *token;
     char *tableName;
     TableInfo *tableInfo;
@@ -483,8 +478,7 @@ void callInsertRecord()
  *	select * from テーブル名 where 条件式
  *	select フィールド名 , ... from テーブル名 where 条件式 (発展課題)
  */
-void callSelectRecord()
-{
+void callSelectRecord(){
     char *token;
     char *tableName;
     TableInfo *tableInfo;
@@ -886,8 +880,7 @@ void callDeleteRecord(){
 /*
  * main -- マイクロDBシステムのエントリポイント
  */
-int main()
-{
+int main(){
     char input[MAX_QUERY];
     char *token;
     char *line;

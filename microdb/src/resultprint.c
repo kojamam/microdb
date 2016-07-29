@@ -308,6 +308,16 @@ void printTableInfo(char *tableName){
 }
 
 
+/*
+ * printRecord-- 単一のレコードを表示する
+ *
+ * 引数:
+ *	tableName: 情報を表示するテーブルの名前
+ *  record: 表示するレコード
+ *
+ * 返り値:
+ *	なし
+ */
 void printRecord(char *tableName, RecordData *record){
     int i;
     TableInfo *tableInfo;
