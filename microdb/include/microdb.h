@@ -18,7 +18,6 @@
 
 #define DB_PATH "/Users/Koji/.microdb/data"
 
-/*ほげーーー*/
 /*
  * Result -- 成功/失敗を返す返り値
  */
