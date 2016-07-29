@@ -91,9 +91,9 @@ void printTableData(char *tableName){
     TableInfo *tableInfo;
     int i, j, k;
     char page[PAGE_SIZE];
-    int numRecordSlot;
+    int numSlot;
     char *p, *q;
-    RecordSlot recordSlot;
+    Slot slot;
     FieldList fieldList;
 
     fieldList.numField = 0;
@@ -118,25 +118,25 @@ void printTableData(char *tableName){
         readPage(file, i, page);
 
         /*スロットの数*/
-        memcpy(&numRecordSlot, page, sizeof(int));
+        memcpy(&numSlot, page, sizeof(int));
 
         p = page + sizeof(int);
 
         /* スロットを見ていく */
-        for (j=0; j<numRecordSlot; ++j) {
+        for (j=0; j<numSlot; ++j) {
             int intValue;
             double doubleValue;
             char stringVal[MAX_STRING];
             int stringLen;
 
-            memcpy(&recordSlot.flag, p, sizeof(char));
-            memcpy(&recordSlot.offset, p+sizeof(char), sizeof(int));
-            memcpy(&recordSlot.size,p+sizeof(char)+sizeof(int), sizeof(int));
+            memcpy(&slot.flag, p, sizeof(char));
+            memcpy(&slot.offset, p+sizeof(char), sizeof(int));
+            memcpy(&slot.size,p+sizeof(char)+sizeof(int), sizeof(int));
 
-            q = page + recordSlot.offset;
+            q = page + slot.offset;
 
             /* レコードがあったら表示 */
-            if(recordSlot.flag == 1){
+            if(slot.flag == 1){
                 numRecord++;
 
                 printf("|");

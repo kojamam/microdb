@@ -125,8 +125,8 @@ struct RecordSet {
 /*
  * PageIndex -- ページ内のインデックス
  */
-typedef struct RecordSlot RecordSlot;
-struct RecordSlot{
+typedef struct Slot Slot;
+struct Slot{
     int num;
     char flag;
     int offset;
