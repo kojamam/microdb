@@ -354,7 +354,7 @@ void callInsertRecord(){
     /* テーブル名を読み込む */
     if ((tableName = getNextToken()) == NULL) {
         /* 文法エラー */
-        printf("%s\n", systemMessage[SYS_MSG_INVALID_INPUT]);
+        printf("%s\n", systemMessage[SYS_MSG_TABLE_NOT_EXIST]);
         return;
     }
 
