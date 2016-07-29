@@ -13,6 +13,8 @@
 #include <math.h>
 #include "messages.h"
 
+#define DB_PATH "/Users/Koji/.microdb/data"
+
 /*
  * Result -- 成功/失敗を返す返り値
  */
@@ -50,7 +52,7 @@ struct File {
 /*
  * MAX_STRING -- 文字列型データの長さの上限
  */
-#define MAX_STRING 64
+#define MAX_STRING 255
 
 /*
  * dataType -- データベースに保存するデータの型

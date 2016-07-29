@@ -293,7 +293,7 @@ Result insertRecord(char *tableName, RecordData *recordData){
     }
 
     /* ファイルオープン */
-    sprintf(filename, "%s%s", tableName, DATA_FILE_EXT);
+    sprintf(filename, "%s/%s%s", DB_PATH, tableName, DATA_FILE_EXT);
     if((file = openFile(filename)) == NULL){
         free(tableInfo);
         free(recordString); //エラー処理
@@ -397,7 +397,7 @@ Result insertRecord(char *tableName, RecordData *recordData){
         closeFile(file);
         return NG;
     }
-    
+
     /*先頭のスロットを読み込み*/
     if((recordSlot = readSlotFromPage(page, 0)) == NULL){
         free(tableInfo);
@@ -522,7 +522,7 @@ static Result checkDuplication(RecordData *recordChecked, RecordSet *recordSet){
 static Result checkCondition(RecordData *recordData, Condition *condition){
     assert(recordData != NULL);
     assert(condition != NULL);
-    
+
     int i;
     OperatorType opType = condition->operator;
     int diff;
@@ -600,7 +600,7 @@ RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condit
     recordSet->recordData = NULL;
 
     /*ファイルをオープン*/
-    sprintf(filename, "%s%s", tableName, DATA_FILE_EXT);
+    sprintf(filename, "%s/%s%s", DB_PATH, tableName, DATA_FILE_EXT);
     if((file = openFile(filename)) == NULL){
         return NULL;
     }
@@ -629,7 +629,7 @@ RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condit
 
         /* スロットを見ていく */
         for (j=0; j<numRecordSlot; ++j) {
-            
+
             /* ページからスロットを読み込み */
             if((recordSlot = readSlotFromPage(page, j)) == NULL){
                 closeFile(file);
@@ -769,7 +769,7 @@ RecordSet *selectRecord(char *tableName, FieldList *fieldList, Condition *condit
         }/* スロット繰り返し */
 
     }/*ページ繰り返し*/
-    
+
     freeTableInfo(tableInfo);
 
     if(closeFile(file) != OK){
@@ -834,7 +834,7 @@ Result deleteRecord(char *tableName, Condition *condition){
     RecordSlot *recordSlot;
 
 
-    sprintf(filename, "%s%s", tableName, DATA_FILE_EXT);
+    sprintf(filename, "%s/%s%s", DB_PATH, tableName, DATA_FILE_EXT);
     if((file = openFile(filename)) == NULL){
         return NG;
     }
@@ -843,7 +843,7 @@ Result deleteRecord(char *tableName, Condition *condition){
         closeFile(file);
         return NG;
     }
-    
+
     /*テーブル情報の取得*/
     if((tableInfo = getTableInfo(tableName)) == NULL){
         closeFile(file);
@@ -931,7 +931,7 @@ Result deleteRecord(char *tableName, Condition *condition){
         }
 
     }/*ページ繰り返し*/
-    
+
     freeTableInfo(tableInfo);
 
 
@@ -939,7 +939,7 @@ Result deleteRecord(char *tableName, Condition *condition){
         closeFile(file);
         return NG;
     }
-    
+
     return OK;
 }
 
@@ -955,7 +955,7 @@ Result deleteRecord(char *tableName, Condition *condition){
 Result createDataFile(char *tableName){
     char filename[MAX_FILENAME];
 
-    sprintf(filename, "%s%s", tableName, DATA_FILE_EXT);
+    sprintf(filename, "%s/%s%s", DB_PATH, tableName, DATA_FILE_EXT);
 
     if(createFile(filename) != OK){
         return NG;
@@ -976,7 +976,7 @@ Result createDataFile(char *tableName){
 Result deleteDataFile(char *tableName){
     char filename[MAX_FILENAME];
 
-    sprintf(filename, "%s%s", tableName, DATA_FILE_EXT);
+    sprintf(filename, "%s/%s%s", DB_PATH, tableName, DATA_FILE_EXT);
 
     if(deleteFile(filename) != OK){
         return NG;

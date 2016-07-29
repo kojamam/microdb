@@ -100,7 +100,7 @@ void printTableData(char *tableName){
 
     recordSet = (RecordSet*)malloc(sizeof(RecordSet));
 
-    sprintf(filename, "%s%s", tableName, DATA_FILE_EXT);
+    sprintf(filename, "%s/%s%s", DB_PATH, tableName, DATA_FILE_EXT);
     file = openFile(filename);
 
     numPage = getNumPages(filename);
@@ -250,7 +250,7 @@ void printRecordSet(char *tableName, RecordSet *recordSet, FieldList *fieldList)
             insertLine(tableInfo->numField, COLUMN_WIDTH);
         }
     }
-    
+
     return;
 }
 
@@ -311,7 +311,7 @@ void printTableInfo(char *tableName){
 void printRecord(char *tableName, RecordData *record){
     int i;
     TableInfo *tableInfo;
-    
+
     /* テーブルの定義情報を取得する */
     if ((tableInfo = getTableInfo(tableName)) == NULL) {
         /* テーブル情報の取得に失敗したので、処理をやめて返る */
@@ -340,9 +340,9 @@ void printRecord(char *tableName, RecordData *record){
         }
 
     }/* レコードの読み込み終わり */
-    
+
     freeTableInfo(tableInfo);
-    
+
     return;
 
 }

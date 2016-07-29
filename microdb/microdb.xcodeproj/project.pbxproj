@@ -90,7 +90,6 @@
 		EB858CB21D39F05C00416A8B /* libreadline.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libreadline.tbd; path = usr/lib/libreadline.tbd; sourceTree = SDKROOT; };
 		EBB4B4EE1D42143000FD60D2 /* test-buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "test-buffer.c"; sourceTree = "<group>"; };
 		EBB4B4F31D4214B800FD60D2 /* test-buffer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "test-buffer"; sourceTree = BUILT_PRODUCTS_DIR; };
-		EBB4B4F51D4214B800FD60D2 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		EBC974351CEC243E0091D221 /* test-datamanip */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "test-datamanip"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBC9743C1CEC24550091D221 /* datamanip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = datamanip.c; sourceTree = "<group>"; };
 		EBC9743E1CEC24640091D221 /* test-datamanip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "test-datamanip.c"; sourceTree = "<group>"; };
@@ -168,7 +167,6 @@
 			children = (
 				EB4687B91CE5B3750076184D /* include */,
 				EB4687B81CE5B35E0076184D /* src */,
-				EBB4B4F41D4214B800FD60D2 /* test-buffer */,
 				EB5343551CE5B09D00DACE1B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -183,14 +181,6 @@
 				EBB4B4F31D4214B800FD60D2 /* test-buffer */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		EBB4B4F41D4214B800FD60D2 /* test-buffer */ = {
-			isa = PBXGroup;
-			children = (
-				EBB4B4F51D4214B800FD60D2 /* main.c */,
-			);
-			path = "test-buffer";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -60,11 +60,11 @@ Result createTable(char *tableName, TableInfo *tableInfo){
     int i;
 
     //ファイルを作成
-    sprintf(filename, "%s%s", tableName, DEF_FILE_EXT);
+    sprintf(filename, "%s/%s%s", DB_PATH, tableName, DEF_FILE_EXT);
     if(createFile(filename) != OK || createDataFile(tableName) != OK){
         return NG;
     }
-    
+
 
     //ファイルをオープン
     if((file = openFile(filename)) == NULL){return NG;}
@@ -108,7 +108,7 @@ Result dropTable(char *tableName){
     char filename[MAX_FILENAME];
 
     //テーブル定義情報ファイルの削除
-    sprintf(filename, "%s%s", tableName, DEF_FILE_EXT);
+    sprintf(filename, "%s/%s%s", DB_PATH, tableName, DEF_FILE_EXT);
     if(deleteFile(filename) != OK || deleteDataFile(tableName) != OK){
         return NG;
     }
@@ -143,7 +143,7 @@ TableInfo *getTableInfo(char *tableName){
     if((tableInfo = (TableInfo*)malloc(sizeof(TableInfo))) == NULL){return NULL;}
 
     //ファイルのオープン
-    sprintf(filename, "%s%s", tableName, DEF_FILE_EXT);
+    sprintf(filename, "%s/%s%s", DB_PATH, tableName, DEF_FILE_EXT);
     if((file = openFile(filename)) == NULL){return NULL;}
 
     //0ページ目を読み込み
