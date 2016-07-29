@@ -95,7 +95,7 @@ void printTableData(char *tableName){
     char *p, *q;
     RecordSlot recordSlot;
     FieldList fieldList;
-    
+
     fieldList.numField = 0;
 
     recordSet = (RecordSet*)malloc(sizeof(RecordSet));
@@ -250,9 +250,8 @@ void printRecordSet(char *tableName, RecordSet *recordSet, FieldList *fieldList)
             insertLine(tableInfo->numField, COLUMN_WIDTH);
         }
     }
-
-    /* レコード数の表示 */
-    printf("%d rows in set\n", recordSet->numRecord);
+    
+    return;
 }
 
 /*
@@ -306,4 +305,44 @@ void printTableInfo(char *tableName){
     freeTableInfo(tableInfo);
 
     return;
+}
+
+
+void printRecord(char *tableName, RecordData *record){
+    int i;
+    TableInfo *tableInfo;
+    
+    /* テーブルの定義情報を取得する */
+    if ((tableInfo = getTableInfo(tableName)) == NULL) {
+        /* テーブル情報の取得に失敗したので、処理をやめて返る */
+        return;
+    }
+
+
+    for (i = 0; i < record->numField; i++) {
+        printf("%s-->", tableInfo->fieldInfo[i].name);
+        switch (record->fieldData[i].dataType) {
+            case TYPE_INT:
+                /* 整数の時、表示 */
+                printf("%d\n", record->fieldData[i].val.intVal);
+                break;
+            case TYPE_DOUBLE:
+                /* 浮動小数点の時、表示 */
+                printf("%f\n", record->fieldData[i].val.doubleVal);
+                break;
+            case TYPE_VARCHAR:
+                /* 文字列の時、表示 */
+                printf("%s\n", record->fieldData[i].val.stringVal);
+                break;
+            default:
+                /* ここにくることはないはず */
+                return ;
+        }
+
+    }/* レコードの読み込み終わり */
+    
+    freeTableInfo(tableInfo);
+    
+    return;
+
 }

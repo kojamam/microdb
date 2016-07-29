@@ -459,7 +459,11 @@ void callInsertRecord()
 
     recordData.next = NULL;
 
-    if(insertRecord(tableName, &recordData) !=  OK){
+    if(insertRecord(tableName, &recordData) ==  OK){
+        printf("%s\n", systemMessage[SYS_MSG_SUCCESS_INSERT]);
+        printRecord(tableName, &recordData);
+        return;
+    }else{
         fprintf(stderr, "%s\n", errorMessage[ERR_MSG_INSERT]);
         return;
     }
@@ -695,6 +699,7 @@ void callSelectRecord()
     }
 
     /* 結果を表示 */
+    printf("%d%s\n", recordSet->numRecord, systemMessage[SYS_MSG_NUM_RECORD_FOUND]);
     printRecordSet(tableName, recordSet, &fieldList);
     /* 結果を解放 */
     freeRecordSet(recordSet);

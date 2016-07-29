@@ -11,7 +11,7 @@
 #include <assert.h>
 #include <limits.h>
 #include <math.h>
-#include "message.h"
+#include "messages.h"
 
 /*
  * Result -- 成功/失敗を返す返り値
@@ -216,3 +216,4 @@ extern Result deleteDataFile(char *);
 extern void printTableData(char *);
 extern void printRecordSet(char *, RecordSet *, FieldList *);
 extern void printTableInfo(char *);
+extern void printRecord(char *, RecordData *);

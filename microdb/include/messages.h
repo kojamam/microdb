@@ -14,11 +14,13 @@ typedef enum SystemMessageNo {
     SYS_MSG_TRY_AGAIN,
     SYS_MSG_TOO_MANY_FIELDS,
     SYS_MSG_SUCCESS_CREATE,
+    SYS_MSG_SUCCESS_INSERT,
     SYS_MSG_SUCCESS_DROP,
     SYS_MSG_INVALID_ARG,
     SYS_MSG_INVALID_COND,
     SYS_MSG_TABLE_NOT_EXIST,
-    SYS_MSG_FIELD_NOT_EXIST
+    SYS_MSG_FIELD_NOT_EXIST,
+    SYS_MSG_NUM_RECORD_FOUND
 } SystemMessageNo;
 
 /* システムメッセージ */
@@ -30,11 +32,13 @@ static char *systemMessage[] = {
     "もう一度入力し直してください。",
     "フィールド数が上限を超えています。",
     "テーブルを作成しました。",
+    "レコードを挿入しました。",
     "テーブルを削除しました。",
     "値が不正です。",
     "条件式の指定に間違いがあります。",
     "指定したテーブルは存在しません。",
-    "指定したフィールドが存在しません。"
+    "指定したフィールドが存在しません。",
+    "行見つかりました。"
 };
 
 /* エラーメッセージ番号 */
