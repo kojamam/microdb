@@ -2,6 +2,9 @@
  * microdb.h - 共通定義ファイル
  */
 
+#ifndef __INCLUDE_MICRODB_H__
+#define __INCLUDE_MICRODB_H__
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -219,3 +222,5 @@ extern void printTableData(char *);
 extern void printRecordSet(char *, RecordSet *, FieldList *);
 extern void printTableInfo(char *);
 extern void printRecord(char *, RecordData *);
+
+#endif
