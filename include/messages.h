@@ -2,8 +2,8 @@
  * errormsg.c -- 表示メッセージ管理ヘッダファイル
  */
 
-#ifndef INCLUDE_MESSAGE_H
-#define INCLUDE_MESSAGE_H
+#ifndef __INCLUDE_MESSAGE_H__
+#define __INCLUDE_MESSAGE_H__
 
 /* システムメッセージ番号 */
 typedef enum SystemMessageNo {
